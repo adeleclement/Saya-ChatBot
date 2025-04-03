@@ -22,7 +22,7 @@ const ChatInterface = () => {
     if (!inputText.trim()) return;
     
     // Add user message
-    const newMessages = [...messages, { type: 'user', content: inputText }];
+    const newMessages = [...messages, { type: 'user' as const, content: inputText }];
     setMessages(newMessages);
     setInputText('');
     
@@ -44,7 +44,7 @@ const ChatInterface = () => {
         responseContent = "Thank you for sharing. Women's health encompasses many aspects of wellbeing, from physical health to emotional and social wellness. If you have a specific concern or topic you'd like to explore further, please let me know and I'll do my best to provide supportive, evidence-based information.";
       }
       
-      setMessages([...newMessages, { type: 'assistant', content: responseContent }]);
+      setMessages([...newMessages, { type: 'assistant' as const, content: responseContent }]);
       setIsLoading(false);
     }, 1500);
   };
