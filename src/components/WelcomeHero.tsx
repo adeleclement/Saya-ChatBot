@@ -2,28 +2,86 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, BookOpen, Heart } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const WelcomeHero = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100, damping: 12 }
+    }
+  };
+
   return (
-    <section className="py-16 md:py-24 lumi-gradient-bg relative">
+    <section className="py-20 md:py-28 lumi-gradient-bg relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-48 -right-48 w-96 h-96 bg-lumi-pink/10 rounded-full blur-3xl opacity-70"></div>
-        <div className="absolute top-20 -left-24 w-64 h-64 bg-lumi-blue/10 rounded-full blur-3xl opacity-70"></div>
+        <motion.div 
+          className="absolute -top-48 -right-48 w-96 h-96 bg-lumi-pink/10 rounded-full blur-3xl opacity-70"
+          animate={{ 
+            scale: [1, 1.1, 1],
+            opacity: [0.6, 0.8, 0.6],
+          }}
+          transition={{ 
+            duration: 8,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        />
+        <motion.div 
+          className="absolute top-20 -left-24 w-64 h-64 bg-lumi-blue/10 rounded-full blur-3xl opacity-70"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.7, 0.5, 0.7],
+          }}
+          transition={{ 
+            duration: 7,
+            repeat: Infinity,
+            repeatType: "reverse",
+            delay: 1
+          }}
+        />
       </div>
       
       <div className="container max-w-6xl mx-auto px-4 relative">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
+        <motion.div 
+          className="grid md:grid-cols-2 gap-8 items-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           <div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-lumi-purple-dark mb-4 leading-tight">
+            <motion.h1 
+              className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-lumi-purple-dark mb-4 leading-tight"
+              variants={itemVariants}
+            >
               Your caring companion for women's wellbeing
-            </h1>
-            <p className="text-lg text-lumi-gray-dark mb-8">
+            </motion.h1>
+            <motion.p 
+              className="text-lg text-lumi-gray-dark mb-8"
+              variants={itemVariants}
+            >
               Lumi provides thoughtful, empathetic, and evidence-based guidance on women's health, reproductive wellness, and personal empowerment.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            </motion.p>
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-4"
+              variants={itemVariants}
+            >
               <Button 
                 size="lg" 
-                className="rounded-full bg-lumi-purple text-white hover:bg-lumi-purple-dark flex gap-2 items-center"
+                className="rounded-full bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 shadow-md hover:shadow-lg transition-all flex gap-2 items-center"
                 onClick={() => document.getElementById('chat')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 <MessageCircle size={20} />
@@ -32,28 +90,73 @@ const WelcomeHero = () => {
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5 flex gap-2 items-center"
+                className="rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5 flex gap-2 items-center transition-all"
                 onClick={() => document.getElementById('resources')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 <BookOpen size={20} />
                 <span>Explore resources</span>
               </Button>
-            </div>
+            </motion.div>
           </div>
           
           <div className="flex justify-center">
-            <div className="relative">
-              <div className="w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-lumi-purple via-lumi-pink to-lumi-blue rounded-full opacity-20 blur-xl animate-pulse-gentle"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-40 h-40 md:w-56 md:h-56 bg-white/90 backdrop-blur rounded-full shadow-soft flex items-center justify-center animate-float">
-                  <Heart size={80} className="text-lumi-purple" />
+            <motion.div 
+              className="relative"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 0.8, type: "spring" }}
+            >
+              <motion.div 
+                className="w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-lumi-purple via-lumi-pink to-lumi-blue rounded-full opacity-20 blur-xl"
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{ 
+                  duration: 4,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              />
+              <motion.div 
+                className="absolute inset-0 flex items-center justify-center"
+                animate={{ rotate: [0, 5, 0, -5, 0] }}
+                transition={{ 
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                <div className="w-40 h-40 md:w-56 md:h-56 bg-white/90 backdrop-blur rounded-full shadow-soft flex items-center justify-center">
+                  <motion.div
+                    animate={{ 
+                      scale: [1, 1.1, 1],
+                      color: ["#9b87f5", "#F8B9D4", "#9b87f5"] 
+                    }}
+                    transition={{ 
+                      duration: 3,
+                      repeat: Infinity,
+                      repeatType: "reverse"
+                    }}
+                  >
+                    <Heart size={80} className="text-lumi-purple" />
+                  </motion.div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            delay: 0.8, 
+            duration: 0.6,
+            staggerChildren: 0.1,
+            delayChildren: 1
+          }}
+        >
           {[
             {
               icon: <Heart className="w-10 h-10 text-lumi-pink" />,
@@ -71,19 +174,34 @@ const WelcomeHero = () => {
               description: "Addressing the physical, emotional, and social aspects of women's health"
             }
           ].map((feature, index) => (
-            <div key={index} className="lumi-card p-6">
-              <div className="mb-4">
+            <motion.div 
+              key={index} 
+              className="neo-card p-6 transition-all duration-300 hover:translate-y-[-5px]"
+              variants={itemVariants}
+              whileHover={{ 
+                boxShadow: "0 10px 25px rgba(155, 135, 245, 0.3)",
+                scale: 1.02,
+                transition: { duration: 0.2 } 
+              }}
+            >
+              <motion.div 
+                className="mb-4"
+                whileHover={{ 
+                  rotate: [0, 10, -10, 0],
+                  transition: { duration: 0.5 }
+                }}
+              >
                 {feature.icon}
-              </div>
+              </motion.div>
               <h3 className="text-xl font-display font-semibold text-lumi-purple-dark mb-2">
                 {feature.title}
               </h3>
               <p className="text-lumi-gray-dark">
                 {feature.description}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
