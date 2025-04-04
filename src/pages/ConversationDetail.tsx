@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Trash2, Edit2, MoreVertical, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-// Define conversation and message types
+// Define message and conversation types
 interface Message {
   id: string;
   content: string;
@@ -29,10 +28,120 @@ interface Conversation {
   messages: Message[];
 }
 
+// Placeholder conversations data
+const getPlaceholderConversation = (id: string): Conversation => {
+  const commonMessages = [
+    {
+      id: "m1",
+      content: "Hello, I have a question about women's health.",
+      sender: "user" as const,
+      timestamp: new Date(Date.now() - 35 * 60000)
+    },
+    {
+      id: "m2",
+      content: "Of course! I'm here to help. What would you like to know about?",
+      sender: "bot" as const,
+      timestamp: new Date(Date.now() - 34 * 60000)
+    }
+  ];
+
+  const conversations: Record<string, Conversation> = {
+    "1": {
+      id: "1",
+      title: "About Hormone Therapy",
+      lastMessage: "What are the risks associated with long-term HRT use?",
+      updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      messages: [
+        ...commonMessages,
+        {
+          id: "m3",
+          content: "I'm considering hormone replacement therapy. What are the common side effects?",
+          sender: "user",
+          timestamp: new Date(Date.now() - 33 * 60000)
+        },
+        {
+          id: "m4",
+          content: "Hormone replacement therapy (HRT) can have various side effects including bloating, breast tenderness, nausea, headaches, and mood changes. These often improve within a few months of starting treatment. There are also some risks to consider, like slightly increased chances of blood clots and certain cancers. It's important to discuss your personal health history with your doctor to understand the specific risks and benefits for you.",
+          sender: "bot",
+          timestamp: new Date(Date.now() - 32 * 60000)
+        },
+        {
+          id: "m5",
+          content: "What are the risks associated with long-term HRT use?",
+          sender: "user",
+          timestamp: new Date(Date.now() - 30 * 60000)
+        }
+      ]
+    },
+    "2": {
+      id: "2",
+      title: "Pregnancy Symptoms",
+      lastMessage: "Is it normal to feel dizzy during the first trimester?",
+      updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      messages: [
+        ...commonMessages,
+        {
+          id: "m3",
+          content: "I'm 8 weeks pregnant and experiencing dizziness. Is this normal?",
+          sender: "user",
+          timestamp: new Date(Date.now() - 33 * 60000)
+        },
+        {
+          id: "m4",
+          content: "Yes, dizziness is quite common during early pregnancy. It's often caused by changes in blood pressure, blood sugar levels, and hormonal shifts. Make sure you're staying hydrated, eating regularly, and changing positions slowly. If the dizziness is severe, persistent, or accompanied by other concerning symptoms, please contact your healthcare provider.",
+          sender: "bot",
+          timestamp: new Date(Date.now() - 32 * 60000)
+        },
+        {
+          id: "m5",
+          content: "Is it normal to feel dizzy during the first trimester?",
+          sender: "user",
+          timestamp: new Date(Date.now() - 30 * 60000)
+        }
+      ]
+    },
+    "3": {
+      id: "3",
+      title: "Menstrual Pain Relief",
+      lastMessage: "What are some natural remedies for period cramps?",
+      updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+      messages: [
+        ...commonMessages,
+        {
+          id: "m3",
+          content: "I experience severe menstrual cramps. Are there any natural remedies I could try?",
+          sender: "user",
+          timestamp: new Date(Date.now() - 33 * 60000)
+        },
+        {
+          id: "m4",
+          content: "Several natural approaches may help with menstrual cramps. Heat therapy like warm baths or heating pads can relax the muscles. Gentle exercise such as walking or yoga might reduce pain. Some find relief with herbal teas (ginger, chamomile), dietary changes (reducing caffeine, sugar), and ensuring adequate magnesium and omega-3 intake. Relaxation techniques like deep breathing and meditation may also help. If your pain is severe, please consult with your healthcare provider.",
+          sender: "bot",
+          timestamp: new Date(Date.now() - 32 * 60000)
+        },
+        {
+          id: "m5",
+          content: "What are some natural remedies for period cramps?",
+          sender: "user",
+          timestamp: new Date(Date.now() - 30 * 60000)
+        }
+      ]
+    }
+  };
+
+  // Return the requested conversation or a default one if not found
+  return conversations[id] || {
+    id: id,
+    title: "New Conversation",
+    lastMessage: "Start a new conversation",
+    updatedAt: new Date(),
+    messages: []
+  };
+};
+
 const ConversationDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useUser();
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [inputMessage, setInputMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -40,25 +149,19 @@ const ConversationDetail = () => {
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    // Fetch conversation from localStorage
-    if (!id) return;
-    
-    const storedConversations = localStorage.getItem(`lumi-conversations-${user?.id}`);
-    if (storedConversations) {
-      const conversations: Conversation[] = JSON.parse(storedConversations);
-      const currentConversation = conversations.find(conv => conv.id === id);
-      
-      if (currentConversation) {
-        setConversation(currentConversation);
-        setEditTitle(currentConversation.title);
-      } else {
-        navigate('/conversations');
-      }
+    if (!id) {
+      navigate('/conversations');
+      return;
     }
-  }, [id, user?.id, navigate]);
+    
+    // Get placeholder conversation data
+    const conv = getPlaceholderConversation(id);
+    setConversation(conv);
+    setEditTitle(conv.title);
+  }, [id, navigate]);
 
   const handleSendMessage = () => {
-    if (!inputMessage.trim() || !conversation || !user) return;
+    if (!inputMessage.trim() || !conversation) return;
 
     // Create a new message
     const newMessage: Message = {
@@ -99,21 +202,11 @@ const ConversationDetail = () => {
 
       setConversation(finalConversation);
       setIsTyping(false);
-
-      // Update localStorage
-      const storedConversations = localStorage.getItem(`lumi-conversations-${user.id}`);
-      if (storedConversations) {
-        const conversations: Conversation[] = JSON.parse(storedConversations);
-        const updatedConversations = conversations.map(conv => 
-          conv.id === finalConversation.id ? finalConversation : conv
-        );
-        localStorage.setItem(`lumi-conversations-${user.id}`, JSON.stringify(updatedConversations));
-      }
     }, 1500);
   };
 
   const handleTitleUpdate = () => {
-    if (!editTitle.trim() || !conversation || !user) return;
+    if (!editTitle.trim() || !conversation) return;
     
     const updatedConversation = {
       ...conversation,
@@ -122,29 +215,11 @@ const ConversationDetail = () => {
     
     setConversation(updatedConversation);
     setIsEditing(false);
-    
-    // Update in localStorage
-    const storedConversations = localStorage.getItem(`lumi-conversations-${user.id}`);
-    if (storedConversations) {
-      const conversations: Conversation[] = JSON.parse(storedConversations);
-      const updatedConversations = conversations.map(conv => 
-        conv.id === updatedConversation.id ? updatedConversation : conv
-      );
-      localStorage.setItem(`lumi-conversations-${user.id}`, JSON.stringify(updatedConversations));
-    }
   };
 
   const handleDeleteConversation = () => {
-    if (!user || !conversation) return;
-    
-    // Remove from localStorage
-    const storedConversations = localStorage.getItem(`lumi-conversations-${user.id}`);
-    if (storedConversations) {
-      const conversations: Conversation[] = JSON.parse(storedConversations);
-      const updatedConversations = conversations.filter(conv => conv.id !== conversation.id);
-      localStorage.setItem(`lumi-conversations-${user.id}`, JSON.stringify(updatedConversations));
-      navigate('/conversations');
-    }
+    if (!conversation) return;
+    navigate('/conversations');
   };
 
   if (!conversation) {

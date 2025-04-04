@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react';
 import { motion } from 'framer-motion';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,38 +16,47 @@ interface Conversation {
   updatedAt: string | Date; // Accept both string and Date for flexibility
 }
 
+// Sample placeholder conversations
+const placeholderConversations: Conversation[] = [
+  {
+    id: "1",
+    title: "About Hormone Therapy",
+    lastMessage: "What are the side effects of hormone replacement therapy?",
+    updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+  },
+  {
+    id: "2",
+    title: "Pregnancy Symptoms",
+    lastMessage: "Is it normal to feel dizzy during the first trimester?",
+    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+  },
+  {
+    id: "3",
+    title: "Menstrual Pain Relief",
+    lastMessage: "What are some natural remedies for period cramps?",
+    updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+  }
+];
+
 const Conversations = () => {
   const navigate = useNavigate();
-  const { user, isLoaded } = useUser();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isLoaded) return;
+    // Simulate API call delay
+    const timer = setTimeout(() => {
+      setConversations(placeholderConversations);
+      setLoading(false);
+    }, 800);
     
-    // Fetch conversations from localStorage once user is loaded
-    if (user?.id) {
-      const storedConversations = localStorage.getItem(`lumi-conversations-${user.id}`);
-      
-      if (storedConversations) {
-        try {
-          const parsedConversations = JSON.parse(storedConversations);
-          setConversations(parsedConversations);
-        } catch (error) {
-          console.error('Error parsing conversations:', error);
-          setConversations([]);
-        }
-      }
-    }
-    setLoading(false);
-  }, [isLoaded, user]);
+    return () => clearTimeout(timer);
+  }, []);
 
   const createNewConversation = () => {
-    if (!user?.id) return;
-    
-    // Create a new conversation object
+    // Create a new conversation object with a unique ID
     const newConversation: Conversation = {
-      id: Date.now().toString(),
+      id: (Date.now()).toString(),
       title: "New Conversation",
       lastMessage: "Start a new conversation",
       updatedAt: new Date().toISOString(),
@@ -57,9 +65,6 @@ const Conversations = () => {
     // Update state with the new conversation
     const updatedConversations = [newConversation, ...conversations];
     setConversations(updatedConversations);
-    
-    // Save to localStorage
-    localStorage.setItem(`lumi-conversations-${user.id}`, JSON.stringify(updatedConversations));
     
     // Navigate to the new conversation
     navigate(`/conversations/${newConversation.id}`);
