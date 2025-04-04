@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Header from '@/components/Header';
-import WelcomeHero from '@/components/WelcomeHero';
+import { Hero } from '@/components/ui/animated-hero';
 import ChatInterface from '@/components/ChatInterface';
 import ResourcesSection from '@/components/ResourcesSection';
 import Footer from '@/components/Footer';
@@ -11,7 +11,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <WelcomeHero />
+        <Hero />
         <ChatInterface />
         <ResourcesSection />
       </main>
