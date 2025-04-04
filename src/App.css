@@ -1,42 +1,129 @@
+
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* General Animation Classes */
+.lumi-fade-in {
+  animation: lumiLumi-fadeIn 0.5s ease-out forwards;
 }
 
-@keyframes logo-spin {
+.lumi-scale-in {
+  animation: lumiScaleIn 0.3s ease-out forwards;
+}
+
+.lumi-slide-in {
+  animation: lumiSlideIn 0.5s ease-out forwards;
+}
+
+/* Custom Animations */
+@keyframes lumiLumi-fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+@keyframes lumiScaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
-.card {
-  padding: 2em;
+@keyframes lumiSlideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+/* UI Elements */
+.neo-card {
+  box-shadow: 0px 4px 24px -1px rgba(155, 135, 245, 0.1);
+  transition: all 0.3s ease;
+}
+
+.neo-card:hover {
+  box-shadow: 0px 8px 32px -1px rgba(155, 135, 245, 0.2);
+}
+
+.shadow-soft {
+  box-shadow: 0px 4px 16px -1px rgba(155, 135, 245, 0.1);
+}
+
+.shadow-glow {
+  box-shadow: 0px 8px 24px -1px rgba(155, 135, 245, 0.2);
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 135, 245, 0.3);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(155, 135, 245, 0.5);
+}
+
+/* Gradient Background */
+.lumi-gradient-bg {
+  background: linear-gradient(135deg, rgba(155, 135, 245, 0.05) 0%, rgba(214, 188, 250, 0.05) 100%);
+}
+
+/* Input Styling */
+.lumi-input {
+  transition: all 0.2s ease;
+  border-color: rgba(155, 135, 245, 0.2);
+}
+
+.lumi-input:focus {
+  border-color: rgba(155, 135, 245, 0.6);
+  box-shadow: 0px 0px 0px 2px rgba(155, 135, 245, 0.1);
+}
+
+/* Button Animations */
+button {
+  transition: all 0.2s ease;
+}
+
+/* Typing Animation */
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }

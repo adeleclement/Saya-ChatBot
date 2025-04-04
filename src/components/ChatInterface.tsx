@@ -4,26 +4,34 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { SendHorizontal, User, Heart, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-interface Message {
-  type: 'user' | 'assistant';
-  content: string;
-}
+import { Link } from 'react-router-dom';
+import { useAuth } from '@clerk/clerk-react';
+import { useChatContext, Message } from '@/context/ChatContext';
+import { useToast } from '@/hooks/use-toast';
 
 const ChatInterface = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      type: 'assistant' as const,
-      content: "Hello! I'm Lumi, your caring companion for women's health and wellbeing. How can I support you today?"
-    }
-  ]);
+  const { 
+    currentConversation, 
+    addMessage, 
+    startNewConversation, 
+    guestMessageCount, 
+    isTyping 
+  } = useChatContext();
   const [inputText, setInputText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { isSignedIn } = useAuth();
+  const { toast } = useToast();
+
+  // Initialize conversation if needed
+  useEffect(() => {
+    if (!currentConversation) {
+      startNewConversation();
+    }
+  }, [currentConversation, startNewConversation]);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [currentConversation?.messages, isTyping]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -32,13 +40,26 @@ const ChatInterface = () => {
   const handleSendMessage = () => {
     if (!inputText.trim()) return;
     
+    // Check guest message limit
+    if (!isSignedIn && guestMessageCount >= 5) {
+      toast({
+        title: "Message limit reached",
+        description: "Sign in to continue chatting and save your conversations.",
+        action: (
+          <Link to="/sign-in" className="bg-lumi-purple hover:bg-lumi-purple-dark text-white px-3 py-1 rounded-md text-xs">
+            Sign in
+          </Link>
+        ),
+      });
+      return;
+    }
+    
     // Add user message
-    const newMessages = [...messages, { type: 'user' as const, content: inputText }];
-    setMessages(newMessages);
+    const userMessage: Message = { type: 'user', content: inputText };
+    addMessage(userMessage);
     setInputText('');
     
-    // Simulate assistant response
-    setIsLoading(true);
+    // Simulate assistant response after a delay
     setTimeout(() => {
       let responseContent = '';
       
@@ -55,8 +76,8 @@ const ChatInterface = () => {
         responseContent = "Thank you for sharing. Women's health encompasses many aspects of wellbeing, from physical health to emotional and social wellness. If you have a specific concern or topic you'd like to explore further, please let me know and I'll do my best to provide supportive, evidence-based information.";
       }
       
-      setMessages([...newMessages, { type: 'assistant' as const, content: responseContent }]);
-      setIsLoading(false);
+      const assistantMessage: Message = { type: 'assistant', content: responseContent };
+      addMessage(assistantMessage);
     }, 1500);
   };
 
@@ -68,20 +89,32 @@ const ChatInterface = () => {
   };
 
   const regenerateLastResponse = () => {
-    if (messages.length > 1) {
-      // Remove the last assistant message
-      setMessages(prev => prev.slice(0, prev.length - 1));
-      setIsLoading(true);
+    if (currentConversation && currentConversation.messages.length > 1) {
+      // Filter out the last assistant message
+      const messages = [...currentConversation.messages];
+      const lastMessageIndex = messages.length - 1;
       
-      // Simulate regenerating a response
-      setTimeout(() => {
-        const newResponse = "I've thought about this further. Women's health is a complex and important field that encompasses physical, mental, and social well-being. Let me know if you'd like me to focus on a specific aspect, and I'll provide more tailored information.";
+      if (messages[lastMessageIndex].type === 'assistant') {
+        // Remove last message
+        const newMessages = messages.slice(0, -1);
         
-        setMessages(prev => [...prev, { type: 'assistant' as const, content: newResponse }]);
-        setIsLoading(false);
-      }, 1500);
+        // Simulate regenerating a response
+        setTimeout(() => {
+          const newResponse: Message = { 
+            type: 'assistant', 
+            content: "I've thought about this further. Women's health is a complex and important field that encompasses physical, mental, and social well-being. Let me know if you'd like me to focus on a specific aspect, and I'll provide more tailored information." 
+          };
+          
+          addMessage(newResponse);
+        }, 1500);
+      }
     }
   };
+
+  // If no conversation exists yet, return empty div (will be populated in useEffect)
+  if (!currentConversation) {
+    return <div></div>;
+  }
 
   return (
     <section id="chat" className="py-16 bg-gradient-to-br from-white to-lumi-purple/5">
@@ -91,12 +124,20 @@ const ChatInterface = () => {
           <p className="text-lumi-gray-dark max-w-2xl mx-auto">
             Ask me about women's health, reproductive wellness, emotional wellbeing, or any other topics you're curious about.
           </p>
+          {!isSignedIn && (
+            <div className="mt-4 text-sm text-lumi-gray flex justify-center items-center gap-2">
+              <span>Guest mode: {5 - guestMessageCount} messages remaining</span>
+              <Link to="/sign-in" className="text-lumi-purple hover:text-lumi-purple-dark">
+                Sign in to unlock unlimited conversations
+              </Link>
+            </div>
+          )}
         </div>
         
         <div className="neo-card backdrop-blur-md bg-white/80 border border-lumi-purple/20 p-4 md:p-6 max-w-3xl mx-auto rounded-2xl shadow-soft transition-all hover:shadow-glow">
           <div className="h-[450px] overflow-y-auto mb-4 p-2 custom-scrollbar">
             <AnimatePresence initial={false}>
-              {messages.map((message, index) => (
+              {currentConversation.messages.map((message, index) => (
                 <motion.div 
                   key={index} 
                   className={`mb-4 flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -132,7 +173,7 @@ const ChatInterface = () => {
               ))}
             </AnimatePresence>
             
-            {isLoading && (
+            {isTyping && (
               <motion.div 
                 className="flex justify-start mb-4"
                 initial={{ opacity: 0, y: 20 }}
@@ -166,11 +207,11 @@ const ChatInterface = () => {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={handleKeyDown}
-                disabled={isLoading}
+                disabled={isTyping || (!isSignedIn && guestMessageCount >= 5)}
               />
               <Button 
                 onClick={handleSendMessage}
-                disabled={!inputText.trim() || isLoading}
+                disabled={!inputText.trim() || isTyping || (!isSignedIn && guestMessageCount >= 5)}
                 className="rounded-full aspect-square p-3 bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 flex items-center justify-center transition-all shadow-md hover:shadow-lg"
                 aria-label="Send message"
               >
@@ -178,7 +219,8 @@ const ChatInterface = () => {
               </Button>
             </div>
             
-            {messages.length > 1 && messages[messages.length - 1].type === 'assistant' && (
+            {currentConversation.messages.length > 1 && 
+             currentConversation.messages[currentConversation.messages.length - 1].type === 'assistant' && (
               <div className="flex justify-center">
                 <Button
                   variant="ghost"
