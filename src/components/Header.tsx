@@ -4,14 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Heart, Info, MessageCircle, Menu, X, LogIn, UserPlus, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth, SignedIn, SignedOut, useUser } from '@clerk/clerk-react';
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const { isSignedIn } = useAuth();
-  const { user } = useUser();
+  
+  // Mock auth state with local state
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,94 +76,80 @@ const Header = () => {
               </Link>
             </motion.div>
           ))}
-          <SignedIn>
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
+          {/* Always show conversations link in the navigation menu */}
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+          >
+            <Link 
+              to="/conversations" 
+              className={`text-lumi-gray-dark hover:text-lumi-purple transition-colors relative group ${
+                location.pathname === '/conversations' ? 'text-lumi-purple' : ''
+              }`}
             >
-              <Link 
-                to="/conversations" 
-                className={`text-lumi-gray-dark hover:text-lumi-purple transition-colors relative group ${
-                  location.pathname === '/conversations' ? 'text-lumi-purple' : ''
-                }`}
-              >
-                My Conversations
-                <span className={`absolute bottom-0 left-0 h-0.5 bg-lumi-purple transition-all duration-300 ${
-                  location.pathname === '/conversations' ? 'w-full' : 'w-0 group-hover:w-full'
-                }`}></span>
-              </Link>
-            </motion.div>
-          </SignedIn>
+              My Conversations
+              <span className={`absolute bottom-0 left-0 h-0.5 bg-lumi-purple transition-all duration-300 ${
+                location.pathname === '/conversations' ? 'w-full' : 'w-0 group-hover:w-full'
+              }`}></span>
+            </Link>
+          </motion.div>
         </nav>
         
         <div className="flex items-center gap-2">
-          <SignedIn>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Link to="/conversations">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="hidden md:flex gap-2 rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5"
-                >
-                  <MessageCircle size={16} />
-                  <span>My Conversations</span>
-                </Button>
-              </Link>
-            </motion.div>
-          </SignedIn>
-          
-          <SignedOut>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Link to="/sign-up">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="hidden md:flex gap-2 rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5"
-                >
-                  <UserPlus size={16} />
-                  <span>Sign Up</span>
-                </Button>
-              </Link>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <Link to="/sign-in">
-                <Button 
-                  size="sm" 
-                  className="rounded-full bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 flex gap-2 items-center transition-all shadow-md hover:shadow-lg"
-                >
-                  <LogIn size={16} />
-                  <span className="hidden md:inline">Log In</span>
-                </Button>
-              </Link>
-            </motion.div>
-          </SignedOut>
-          
-          <SignedIn>
+          {/* Show conversations button */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <Link to="/conversations">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="hidden md:flex gap-2 rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5"
+              >
+                <MessageCircle size={16} />
+                <span>My Conversations</span>
+              </Button>
+            </Link>
+          </motion.div>
+          
+          {/* Auth buttons */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Link to="/sign-up">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="hidden md:flex gap-2 rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5"
+              >
+                <UserPlus size={16} />
+                <span>Sign Up</span>
+              </Button>
+            </Link>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <Link to="/sign-in">
               <Button 
                 size="sm" 
                 className="rounded-full bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 flex gap-2 items-center transition-all shadow-md hover:shadow-lg"
               >
-                <User size={16} />
-                <span className="hidden md:inline">Profile</span>
+                <LogIn size={16} />
+                <span className="hidden md:inline">Log In</span>
               </Button>
             </Link>
-          </SignedIn>
+          </motion.div>
           
+          {/* Mobile menu button */}
           <Button
             variant="ghost"
             size="icon"
@@ -205,22 +191,21 @@ const Header = () => {
                 </motion.div>
               ))}
               
-              <SignedIn>
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 0.2 }}
+              {/* Always show Conversations link in mobile menu */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+              >
+                <Link 
+                  to="/conversations" 
+                  className={`text-lumi-gray-dark px-4 py-3 rounded-lg hover:bg-lumi-purple/5 hover:text-lumi-purple transition-colors block ${
+                    location.pathname.startsWith('/conversations') ? 'text-lumi-purple bg-lumi-purple/5' : ''
+                  }`}
                 >
-                  <Link 
-                    to="/conversations" 
-                    className={`text-lumi-gray-dark px-4 py-3 rounded-lg hover:bg-lumi-purple/5 hover:text-lumi-purple transition-colors block ${
-                      location.pathname.startsWith('/conversations') ? 'text-lumi-purple bg-lumi-purple/5' : ''
-                    }`}
-                  >
-                    My Conversations
-                  </Link>
-                </motion.div>
-              </SignedIn>
+                  My Conversations
+                </Link>
+              </motion.div>
               
               <motion.div
                 className="px-4 pt-4 mt-4 border-t border-lumi-purple/10"
@@ -228,36 +213,23 @@ const Header = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.4 }}
               >
-                <SignedOut>
-                  <Link to="/sign-up">
-                    <Button 
-                      variant="outline" 
-                      className="w-full justify-start gap-2 rounded-lg border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5 mb-3"
-                    >
-                      <UserPlus size={18} />
-                      <span>Sign Up</span>
-                    </Button>
-                  </Link>
-                  <Link to="/sign-in">
-                    <Button 
-                      className="w-full justify-start gap-2 rounded-lg bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 transition-all"
-                    >
-                      <LogIn size={18} />
-                      <span>Log In</span>
-                    </Button>
-                  </Link>
-                </SignedOut>
-                
-                <SignedIn>
-                  <Link to="/conversations">
-                    <Button 
-                      className="w-full justify-start gap-2 rounded-lg bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 transition-all"
-                    >
-                      <User size={18} />
-                      <span>Profile</span>
-                    </Button>
-                  </Link>
-                </SignedIn>
+                <Link to="/sign-up">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start gap-2 rounded-lg border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5 mb-3"
+                  >
+                    <UserPlus size={18} />
+                    <span>Sign Up</span>
+                  </Button>
+                </Link>
+                <Link to="/sign-in">
+                  <Button 
+                    className="w-full justify-start gap-2 rounded-lg bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 transition-all"
+                  >
+                    <LogIn size={18} />
+                    <span>Log In</span>
+                  </Button>
+                </Link>
               </motion.div>
             </nav>
           </motion.div>

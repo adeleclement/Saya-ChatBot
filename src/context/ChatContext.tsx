@@ -1,6 +1,5 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { useUser, useAuth } from '@clerk/clerk-react';
 import { useToast } from '@/hooks/use-toast';
 
 export interface Message {
@@ -51,8 +50,9 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [guestMessageCount, setGuestMessageCount] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
-  const { isSignedIn, userId } = useAuth();
-  const { user } = useUser();
+  // Mocking auth state for development
+  const isSignedIn = false;
+  const userId = "mock-user-id";
   const { toast } = useToast();
 
   // Initialize or load conversations
