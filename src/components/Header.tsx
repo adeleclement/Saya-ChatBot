@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Heart, Info, MessageCircle, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
+import { GlowMenuDemo } from './ui/glow-menu-demo';
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -53,38 +54,10 @@ const Header = () => {
           </Link>
         </motion.div>
         
-        <nav className="hidden md:flex items-center gap-8">
-          {navigation.map((item, index) => (
-            <motion.div 
-              key={item.label}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-            >
-              {item.href.startsWith('#') || item.href.includes('/#') ? (
-                <a 
-                  href={item.href} 
-                  className="text-lumi-gray-dark hover:text-lumi-purple transition-colors relative group"
-                >
-                  {item.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-lumi-purple group-hover:w-full transition-all duration-300"></span>
-                </a>
-              ) : (
-                <Link 
-                  to={item.href} 
-                  className={`text-lumi-gray-dark hover:text-lumi-purple transition-colors relative group ${
-                    location.pathname === item.href ? 'text-lumi-purple' : ''
-                  }`}
-                >
-                  {item.label}
-                  <span className={`absolute bottom-0 left-0 h-0.5 bg-lumi-purple transition-all duration-300 ${
-                    location.pathname === item.href ? 'w-full' : 'w-0 group-hover:w-full'
-                  }`}></span>
-                </Link>
-              )}
-            </motion.div>
-          ))}
-        </nav>
+        {/* Desktop nav - now using GlowMenuDemo instead of the old navigation */}
+        <div className="hidden md:flex items-center">
+          <GlowMenuDemo />
+        </div>
         
         <div className="flex items-center gap-2">
           <motion.div
