@@ -34,12 +34,54 @@ const ChatInterface = () => {
   };
 
   const extractResponseText = (data: any): string => {
-    console.log("Extracting response from data:", data);
+    console.log("Raw response data:", JSON.stringify(data));
     
-    // Check if data has a Body property (from screenshot)
+    // Check for nested Bundle structure (as seen in screenshot)
+    if (data && data.Bundle1 && data.Bundle1.Body) {
+      console.log("Found nested Bundle1.Body:", data.Bundle1.Body);
+      return data.Bundle1.Body;
+    }
+    
+    // Check if Body is directly in a Bundle structure
+    if (data && data.Bundle && data.Bundle.Body) {
+      console.log("Found Bundle.Body:", data.Bundle.Body);
+      return data.Bundle.Body;
+    }
+    
+    // Check for Body property directly in the response
     if (data && typeof data.Body === 'string') {
-      console.log("Found Body property:", data.Body);
+      console.log("Found direct Body property:", data.Body);
       return data.Body;
+    }
+    
+    // Check for numbered bundles (like Bundle 1)
+    const bundleKeys = Object.keys(data || {}).filter(key => key.startsWith('Bundle') || key.includes('Bundle'));
+    if (bundleKeys.length > 0) {
+      for (const key of bundleKeys) {
+        if (data[key] && typeof data[key].Body === 'string') {
+          console.log(`Found Body in ${key}:`, data[key].Body);
+          return data[key].Body;
+        }
+        
+        // If Bundle is an object itself, try to find Body inside
+        if (typeof data[key] === 'object' && data[key] !== null) {
+          if (typeof data[key].Body === 'string') {
+            console.log(`Found Body inside ${key}:`, data[key].Body);
+            return data[key].Body;
+          }
+        }
+      }
+    }
+    
+    // Check if data itself has properties that might contain the response
+    if (data) {
+      // Look for any property named Body or body
+      for (const key in data) {
+        if (key.toLowerCase() === 'body' && typeof data[key] === 'string') {
+          console.log(`Found Body in property ${key}:`, data[key]);
+          return data[key];
+        }
+      }
     }
     
     // Check for reply property
@@ -104,7 +146,12 @@ const ChatInterface = () => {
             content: responseText
           }]);
         } else {
-          throw new Error('No response content found');
+          console.log("No response text found, showing raw data for debugging");
+          // Show raw data for debugging purposes
+          setMessages([...newMessages, { 
+            type: 'assistant',
+            content: `I received a response but couldn't parse it. Here's what I received: ${JSON.stringify(rawData)}`
+          }]);
         }
       } else {
         console.error(`Response not OK: ${response.status}`, await response.text());
@@ -175,7 +222,11 @@ const ChatInterface = () => {
                 content: responseText
               }]);
             } else {
-              throw new Error('No regenerated response content found');
+              console.log("No response text found for regenerated message, showing raw data for debugging");
+              setMessages(prev => [...prev, { 
+                type: 'assistant',
+                content: `I received a response but couldn't parse it. Here's what I received: ${JSON.stringify(rawData)}`
+              }]);
             }
           } else {
             throw new Error('Failed to get a regenerated response');
