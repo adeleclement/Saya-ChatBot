@@ -5,6 +5,7 @@ import { Hero } from '@/components/ui/animated-hero';
 import ChatInterface from '@/components/ChatInterface';
 import ResourcesSection from '@/components/ResourcesSection';
 import Footer from '@/components/Footer';
+import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
   return (
@@ -16,6 +17,7 @@ const Index = () => {
         <ResourcesSection />
       </main>
       <Footer />
+      <Toaster />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -32,6 +33,38 @@ const ChatInterface = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const extractResponseText = (data: any): string => {
+    console.log("Extracting response from data:", data);
+    
+    // Check if data has a Body property (from screenshot)
+    if (data && typeof data.Body === 'string') {
+      console.log("Found Body property:", data.Body);
+      return data.Body;
+    }
+    
+    // Check for reply property
+    if (data && typeof data.reply === 'string') {
+      console.log("Found reply property:", data.reply);
+      return data.reply;
+    }
+    
+    // If data itself is a string
+    if (typeof data === 'string') {
+      console.log("Data is a string:", data);
+      return data;
+    }
+    
+    // Try to stringify the data
+    try {
+      const dataStr = JSON.stringify(data);
+      console.log("Stringified data:", dataStr);
+      return dataStr;
+    } catch (e) {
+      console.error("Failed to stringify data:", e);
+      return "I'm sorry, I couldn't process your request properly.";
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
     
@@ -59,21 +92,23 @@ const ChatInterface = () => {
       });
       
       if (response.ok) {
-        const data = await response.json();
-        console.log("Webhook response:", data);
+        const rawData = await response.json();
+        console.log("Raw webhook response:", rawData);
         
-        const botResponse = data.Body || data.reply || data;
+        const responseText = extractResponseText(rawData);
+        console.log("Extracted response text:", responseText);
         
-        const responseText = typeof botResponse === 'string' 
-          ? botResponse 
-          : botResponse.reply || botResponse.Body || JSON.stringify(botResponse);
-        
-        setMessages([...newMessages, { 
-          type: 'assistant',
-          content: responseText
-        }]);
+        if (responseText) {
+          setMessages([...newMessages, { 
+            type: 'assistant',
+            content: responseText
+          }]);
+        } else {
+          throw new Error('No response content found');
+        }
       } else {
-        throw new Error('Failed to get a response');
+        console.error(`Response not OK: ${response.status}`, await response.text());
+        throw new Error(`Failed to get a response: ${response.status}`);
       }
     } catch (error) {
       console.error('Error sending message to webhook:', error);
@@ -128,19 +163,20 @@ const ChatInterface = () => {
           });
           
           if (response.ok) {
-            const data = await response.json();
-            console.log("Regenerated response:", data);
+            const rawData = await response.json();
+            console.log("Raw regenerated response:", rawData);
             
-            const botResponse = data.Body || data.reply || data;
+            const responseText = extractResponseText(rawData);
+            console.log("Extracted regenerated response:", responseText);
             
-            const responseText = typeof botResponse === 'string' 
-              ? botResponse 
-              : botResponse.reply || botResponse.Body || JSON.stringify(botResponse);
-            
-            setMessages(prev => [...prev, { 
-              type: 'assistant', 
-              content: responseText
-            }]);
+            if (responseText) {
+              setMessages(prev => [...prev, { 
+                type: 'assistant', 
+                content: responseText
+              }]);
+            } else {
+              throw new Error('No regenerated response content found');
+            }
           } else {
             throw new Error('Failed to get a regenerated response');
           }
