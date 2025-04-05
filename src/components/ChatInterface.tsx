@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -33,80 +32,6 @@ const ChatInterface = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const extractResponseText = (data: any): string => {
-    console.log("Raw response data:", JSON.stringify(data));
-    
-    // Check for nested Bundle structure (as seen in screenshot)
-    if (data && data.Bundle1 && data.Bundle1.Body) {
-      console.log("Found nested Bundle1.Body:", data.Bundle1.Body);
-      return data.Bundle1.Body;
-    }
-    
-    // Check if Body is directly in a Bundle structure
-    if (data && data.Bundle && data.Bundle.Body) {
-      console.log("Found Bundle.Body:", data.Bundle.Body);
-      return data.Bundle.Body;
-    }
-    
-    // Check for Body property directly in the response
-    if (data && typeof data.Body === 'string') {
-      console.log("Found direct Body property:", data.Body);
-      return data.Body;
-    }
-    
-    // Check for numbered bundles (like Bundle 1)
-    const bundleKeys = Object.keys(data || {}).filter(key => key.startsWith('Bundle') || key.includes('Bundle'));
-    if (bundleKeys.length > 0) {
-      for (const key of bundleKeys) {
-        if (data[key] && typeof data[key].Body === 'string') {
-          console.log(`Found Body in ${key}:`, data[key].Body);
-          return data[key].Body;
-        }
-        
-        // If Bundle is an object itself, try to find Body inside
-        if (typeof data[key] === 'object' && data[key] !== null) {
-          if (typeof data[key].Body === 'string') {
-            console.log(`Found Body inside ${key}:`, data[key].Body);
-            return data[key].Body;
-          }
-        }
-      }
-    }
-    
-    // Check if data itself has properties that might contain the response
-    if (data) {
-      // Look for any property named Body or body
-      for (const key in data) {
-        if (key.toLowerCase() === 'body' && typeof data[key] === 'string') {
-          console.log(`Found Body in property ${key}:`, data[key]);
-          return data[key];
-        }
-      }
-    }
-    
-    // Check for reply property
-    if (data && typeof data.reply === 'string') {
-      console.log("Found reply property:", data.reply);
-      return data.reply;
-    }
-    
-    // If data itself is a string
-    if (typeof data === 'string') {
-      console.log("Data is a string:", data);
-      return data;
-    }
-    
-    // Try to stringify the data
-    try {
-      const dataStr = JSON.stringify(data);
-      console.log("Stringified data:", dataStr);
-      return dataStr;
-    } catch (e) {
-      console.error("Failed to stringify data:", e);
-      return "I'm sorry, I couldn't process your request properly.";
-    }
-  };
-
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
     
@@ -137,22 +62,11 @@ const ChatInterface = () => {
         const rawData = await response.json();
         console.log("Raw webhook response:", rawData);
         
-        const responseText = extractResponseText(rawData);
-        console.log("Extracted response text:", responseText);
-        
-        if (responseText) {
-          setMessages([...newMessages, { 
-            type: 'assistant',
-            content: responseText
-          }]);
-        } else {
-          console.log("No response text found, showing raw data for debugging");
-          // Show raw data for debugging purposes
-          setMessages([...newMessages, { 
-            type: 'assistant',
-            content: `I received a response but couldn't parse it. Here's what I received: ${JSON.stringify(rawData)}`
-          }]);
-        }
+        // Simply use the entire response as the assistant's message
+        setMessages([...newMessages, { 
+          type: 'assistant',
+          content: rawData
+        }]);
       } else {
         console.error(`Response not OK: ${response.status}`, await response.text());
         throw new Error(`Failed to get a response: ${response.status}`);
@@ -213,21 +127,11 @@ const ChatInterface = () => {
             const rawData = await response.json();
             console.log("Raw regenerated response:", rawData);
             
-            const responseText = extractResponseText(rawData);
-            console.log("Extracted regenerated response:", responseText);
-            
-            if (responseText) {
-              setMessages(prev => [...prev, { 
-                type: 'assistant', 
-                content: responseText
-              }]);
-            } else {
-              console.log("No response text found for regenerated message, showing raw data for debugging");
-              setMessages(prev => [...prev, { 
-                type: 'assistant',
-                content: `I received a response but couldn't parse it. Here's what I received: ${JSON.stringify(rawData)}`
-              }]);
-            }
+            // Simply use the entire response as the assistant's message
+            setMessages(prev => [...prev, { 
+              type: 'assistant', 
+              content: rawData
+            }]);
           } else {
             throw new Error('Failed to get a regenerated response');
           }
