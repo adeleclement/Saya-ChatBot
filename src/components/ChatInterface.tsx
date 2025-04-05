@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -23,7 +22,6 @@ const ChatInterface = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
-  // Make.com webhook URL
   const webhookUrl = "https://hook.eu2.make.com/bujbos6s17kfulplbqi0eq4w1hvo26ou";
 
   useEffect(() => {
@@ -37,15 +35,15 @@ const ChatInterface = () => {
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
     
-    // Add user message
     const newMessages = [...messages, { type: 'user' as const, content: inputText }];
     setMessages(newMessages);
     setInputText('');
     
-    // Send to webhook and get response
     setIsLoading(true);
     
     try {
+      console.log("Sending message to webhook:", inputText);
+      
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
@@ -53,7 +51,6 @@ const ChatInterface = () => {
         },
         body: JSON.stringify({
           message: inputText,
-          // Include conversation history if needed
           history: messages.map(msg => ({
             role: msg.type === 'user' ? 'user' : 'assistant',
             content: msg.content
@@ -63,10 +60,17 @@ const ChatInterface = () => {
       
       if (response.ok) {
         const data = await response.json();
-        // Add the bot response to messages
+        console.log("Webhook response:", data);
+        
+        const botResponse = data.Body || data.reply || data;
+        
+        const responseText = typeof botResponse === 'string' 
+          ? botResponse 
+          : botResponse.reply || botResponse.Body || JSON.stringify(botResponse);
+        
         setMessages([...newMessages, { 
           type: 'assistant',
-          content: data.reply || "I'm sorry, I couldn't process your request. Please try again."
+          content: responseText
         }]);
       } else {
         throw new Error('Failed to get a response');
@@ -79,7 +83,6 @@ const ChatInterface = () => {
         variant: "destructive",
       });
       
-      // Add fallback message if connection fails
       setMessages([...newMessages, { 
         type: 'assistant',
         content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment."
@@ -98,17 +101,17 @@ const ChatInterface = () => {
 
   const regenerateLastResponse = async () => {
     if (messages.length > 1) {
-      // Find the last user message to regenerate a response for it
       const lastUserMessageIndex = [...messages].reverse().findIndex(msg => msg.type === 'user');
       if (lastUserMessageIndex !== -1) {
         const userMessageIndex = messages.length - 1 - lastUserMessageIndex;
         const userMessage = messages[userMessageIndex];
         
-        // Remove the last assistant message
         setMessages(prev => prev.slice(0, prev.length - 1));
         setIsLoading(true);
         
         try {
+          console.log("Regenerating response for:", userMessage.content);
+          
           const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: {
@@ -126,9 +129,17 @@ const ChatInterface = () => {
           
           if (response.ok) {
             const data = await response.json();
+            console.log("Regenerated response:", data);
+            
+            const botResponse = data.Body || data.reply || data;
+            
+            const responseText = typeof botResponse === 'string' 
+              ? botResponse 
+              : botResponse.reply || botResponse.Body || JSON.stringify(botResponse);
+            
             setMessages(prev => [...prev, { 
               type: 'assistant', 
-              content: data.reply || "I've reconsidered my response. Is there anything specific you'd like me to address?"
+              content: responseText
             }]);
           } else {
             throw new Error('Failed to get a regenerated response');
