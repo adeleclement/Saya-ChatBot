@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { SendHorizontal, User, Heart, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   type: 'user' | 'assistant';
@@ -20,6 +21,10 @@ const ChatInterface = () => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+  
+  // Make.com webhook URL
+  const webhookUrl = "https://hook.eu2.make.com/bujbos6s17kfulplbqi0eq4w1hvo26ou";
 
   useEffect(() => {
     scrollToBottom();
@@ -29,7 +34,7 @@ const ChatInterface = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!inputText.trim()) return;
     
     // Add user message
@@ -37,27 +42,51 @@ const ChatInterface = () => {
     setMessages(newMessages);
     setInputText('');
     
-    // Simulate assistant response
+    // Send to webhook and get response
     setIsLoading(true);
-    setTimeout(() => {
-      let responseContent = '';
+    
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: inputText,
+          // Include conversation history if needed
+          history: messages.map(msg => ({
+            role: msg.type === 'user' ? 'user' : 'assistant',
+            content: msg.content
+          }))
+        }),
+      });
       
-      // Simple example responses based on keywords
-      const lowercaseInput = inputText.toLowerCase();
-      
-      if (lowercaseInput.includes('period') || lowercaseInput.includes('menstruation')) {
-        responseContent = "Menstruation is a natural part of a woman's reproductive cycle. If you're experiencing unusual symptoms or have specific questions about your period, I'm here to help. Remember that cycle lengths and flow can vary between individuals, and it's always a good idea to track your cycle to understand your own patterns.";
-      } else if (lowercaseInput.includes('pregnancy') || lowercaseInput.includes('pregnant')) {
-        responseContent = "Pregnancy is a significant journey with many physical and emotional changes. It's important to seek regular prenatal care if you are pregnant or think you might be. I can provide general information, but your healthcare provider should be your primary source of guidance during pregnancy.";
-      } else if (lowercaseInput.includes('birth control') || lowercaseInput.includes('contraception')) {
-        responseContent = "There are many birth control options available, each with different effectiveness rates, side effects, and considerations. The best choice depends on your personal health history, preferences, and needs. I recommend discussing these options with a healthcare provider who can help you make an informed decision.";
+      if (response.ok) {
+        const data = await response.json();
+        // Add the bot response to messages
+        setMessages([...newMessages, { 
+          type: 'assistant',
+          content: data.reply || "I'm sorry, I couldn't process your request. Please try again."
+        }]);
       } else {
-        responseContent = "Thank you for sharing. Women's health encompasses many aspects of wellbeing, from physical health to emotional and social wellness. If you have a specific concern or topic you'd like to explore further, please let me know and I'll do my best to provide supportive, evidence-based information.";
+        throw new Error('Failed to get a response');
       }
+    } catch (error) {
+      console.error('Error sending message to webhook:', error);
+      toast({
+        title: "Connection Error",
+        description: "Couldn't connect to the assistant. Please try again later.",
+        variant: "destructive",
+      });
       
-      setMessages([...newMessages, { type: 'assistant' as const, content: responseContent }]);
+      // Add fallback message if connection fails
+      setMessages([...newMessages, { 
+        type: 'assistant',
+        content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment."
+      }]);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -67,19 +96,59 @@ const ChatInterface = () => {
     }
   };
 
-  const regenerateLastResponse = () => {
+  const regenerateLastResponse = async () => {
     if (messages.length > 1) {
-      // Remove the last assistant message
-      setMessages(prev => prev.slice(0, prev.length - 1));
-      setIsLoading(true);
-      
-      // Simulate regenerating a response
-      setTimeout(() => {
-        const newResponse = "I've thought about this further. Women's health is a complex and important field that encompasses physical, mental, and social well-being. Let me know if you'd like me to focus on a specific aspect, and I'll provide more tailored information.";
+      // Find the last user message to regenerate a response for it
+      const lastUserMessageIndex = [...messages].reverse().findIndex(msg => msg.type === 'user');
+      if (lastUserMessageIndex !== -1) {
+        const userMessageIndex = messages.length - 1 - lastUserMessageIndex;
+        const userMessage = messages[userMessageIndex];
         
-        setMessages(prev => [...prev, { type: 'assistant' as const, content: newResponse }]);
-        setIsLoading(false);
-      }, 1500);
+        // Remove the last assistant message
+        setMessages(prev => prev.slice(0, prev.length - 1));
+        setIsLoading(true);
+        
+        try {
+          const response = await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              message: userMessage.content,
+              regenerate: true,
+              history: messages.slice(0, userMessageIndex + 1).map(msg => ({
+                role: msg.type === 'user' ? 'user' : 'assistant',
+                content: msg.content
+              }))
+            }),
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            setMessages(prev => [...prev, { 
+              type: 'assistant', 
+              content: data.reply || "I've reconsidered my response. Is there anything specific you'd like me to address?"
+            }]);
+          } else {
+            throw new Error('Failed to get a regenerated response');
+          }
+        } catch (error) {
+          console.error('Error regenerating response:', error);
+          toast({
+            title: "Connection Error",
+            description: "Couldn't regenerate the response. Please try again.",
+            variant: "destructive",
+          });
+          
+          setMessages(prev => [...prev, { 
+            type: 'assistant',
+            content: "I'm sorry, I couldn't regenerate my response. Let's continue our conversation."
+          }]);
+        } finally {
+          setIsLoading(false);
+        }
+      }
     }
   };
 
@@ -160,7 +229,7 @@ const ChatInterface = () => {
           <div className="flex flex-col gap-3">
             <div className="flex gap-2">
               <Textarea 
-                className="lumi-input resize-none border-lumi-purple/20 focus:border-lumi-purple focus-visible:ring-1 focus-visible:ring-lumi-purple rounded-xl bg-white/80 backdrop-blur-sm transition-all"
+                className="lumi-input resize-none border-lumi-purple/20 focus:border-lumi-purple focus-visible:ring-1 focus:ring-lumi-purple rounded-xl bg-white/80 backdrop-blur-sm transition-all"
                 placeholder="Type your message here..."
                 rows={1}
                 value={inputText}
