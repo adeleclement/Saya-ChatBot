@@ -51,22 +51,22 @@ const ChatInterface = () => {
         },
         body: JSON.stringify({
           message: inputText,
-          history: messages.map(msg => ({
-            role: msg.type === 'user' ? 'user' : 'assistant',
-            content: msg.content
-          }))
         }),
       });
       
       if (response.ok) {
-        const rawData = await response.json();
-        console.log("Raw webhook response:", rawData);
+        const data = await response.json();
+        console.log("Webhook response:", data);
         
-        // Simply use the entire response as the assistant's message
-        setMessages([...newMessages, { 
-          type: 'assistant',
-          content: rawData
-        }]);
+        if (data && data.reply) {
+          setMessages([...newMessages, { 
+            type: 'assistant',
+            content: data.reply
+          }]);
+        } else {
+          console.error("Invalid response format:", data);
+          throw new Error("Invalid response format from webhook");
+        }
       } else {
         console.error(`Response not OK: ${response.status}`, await response.text());
         throw new Error(`Failed to get a response: ${response.status}`);
@@ -116,22 +116,22 @@ const ChatInterface = () => {
             body: JSON.stringify({
               message: userMessage.content,
               regenerate: true,
-              history: messages.slice(0, userMessageIndex + 1).map(msg => ({
-                role: msg.type === 'user' ? 'user' : 'assistant',
-                content: msg.content
-              }))
             }),
           });
           
           if (response.ok) {
-            const rawData = await response.json();
-            console.log("Raw regenerated response:", rawData);
+            const data = await response.json();
+            console.log("Regenerated response:", data);
             
-            // Simply use the entire response as the assistant's message
-            setMessages(prev => [...prev, { 
-              type: 'assistant', 
-              content: rawData
-            }]);
+            if (data && data.reply) {
+              setMessages(prev => [...prev, { 
+                type: 'assistant', 
+                content: data.reply
+              }]);
+            } else {
+              console.error("Invalid response format:", data);
+              throw new Error("Invalid response format from webhook");
+            }
           } else {
             throw new Error('Failed to get a regenerated response');
           }
