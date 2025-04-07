@@ -1,10 +1,7 @@
-
 import React from 'react';
 import { Heart, ExternalLink, Mail, Instagram, Twitter } from 'lucide-react';
-
 const Footer = () => {
-  return (
-    <footer id="about" className="bg-white border-t border-lumi-purple/10 pt-12 pb-6">
+  return <footer id="about" className="bg-white border-t border-lumi-purple/10 pt-12 pb-6">
       <div className="container max-w-6xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           <div className="md:col-span-2">
@@ -12,28 +9,19 @@ const Footer = () => {
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-lumi-purple to-lumi-pink flex items-center justify-center">
                 <Heart size={16} className="text-white" />
               </div>
-              <h2 className="text-xl font-display font-bold text-lumi-purple">Lumi</h2>
+              <h2 className="text-xl font-display font-bold text-lumi-purple">Yara</h2>
             </div>
             <p className="text-lumi-gray-dark mb-4">
               Your compassionate companion for women's health and wellbeing, providing evidence-based information and supportive guidance.
             </p>
             <div className="flex gap-4">
-              <a 
-                href="#" 
-                className="w-8 h-8 rounded-full bg-lumi-gray-light/50 flex items-center justify-center text-lumi-purple hover:bg-lumi-purple/10 transition-colors"
-              >
+              <a href="#" className="w-8 h-8 rounded-full bg-lumi-gray-light/50 flex items-center justify-center text-lumi-purple hover:bg-lumi-purple/10 transition-colors">
                 <Mail size={16} />
               </a>
-              <a 
-                href="#" 
-                className="w-8 h-8 rounded-full bg-lumi-gray-light/50 flex items-center justify-center text-lumi-purple hover:bg-lumi-purple/10 transition-colors"
-              >
+              <a href="#" className="w-8 h-8 rounded-full bg-lumi-gray-light/50 flex items-center justify-center text-lumi-purple hover:bg-lumi-purple/10 transition-colors">
                 <Instagram size={16} />
               </a>
-              <a 
-                href="#" 
-                className="w-8 h-8 rounded-full bg-lumi-gray-light/50 flex items-center justify-center text-lumi-purple hover:bg-lumi-purple/10 transition-colors"
-              >
+              <a href="#" className="w-8 h-8 rounded-full bg-lumi-gray-light/50 flex items-center justify-center text-lumi-purple hover:bg-lumi-purple/10 transition-colors">
                 <Twitter size={16} />
               </a>
             </div>
@@ -76,8 +64,6 @@ const Footer = () => {
           </p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
