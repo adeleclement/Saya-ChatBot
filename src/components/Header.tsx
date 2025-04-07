@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Info, MessageCircle, Menu, X } from 'lucide-react';
+import { Info, MessageCircle, Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { GlowMenuDemo } from './ui/glow-menu-demo';
@@ -21,12 +20,11 @@ const Header = () => {
   }, []);
 
   const navigation = [
-    { label: 'Chat with Lumi', href: location.pathname === '/' ? '#chat' : '/#chat' },
+    { label: 'Chat', href: location.pathname === '/' ? '#chat' : '/#chat' },
     { label: 'Resources', href: '/resources' },
     { label: 'About', href: '/about' }
   ];
 
-  // Close mobile menu when navigating to a new page
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
@@ -47,14 +45,10 @@ const Header = () => {
           transition={{ duration: 0.5 }}
         >
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-lumi-purple to-lumi-pink flex items-center justify-center">
-              <Heart size={16} className="text-white" />
-            </div>
-            <h1 className="text-xl font-display font-bold bg-gradient-to-r from-lumi-purple to-lumi-purple-dark bg-clip-text text-transparent">Lumi</h1>
+            <h1 className="text-xl font-display font-bold bg-gradient-to-r from-lumi-purple to-lumi-purple-dark bg-clip-text text-transparent">Yara</h1>
           </Link>
         </motion.div>
         
-        {/* Desktop nav - now using GlowMenuDemo instead of the old navigation */}
         <div className="hidden md:flex items-center">
           <GlowMenuDemo />
         </div>
@@ -65,14 +59,14 @@ const Header = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Link to="/learn-more">
+            <Link to="/signup">
               <Button 
                 variant="outline" 
                 size="sm" 
                 className="hidden md:flex gap-2 rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5"
               >
                 <Info size={16} />
-                <span>Learn more</span>
+                <span>Sign Up</span>
               </Button>
             </Link>
           </motion.div>
@@ -82,26 +76,15 @@ const Header = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            {location.pathname === '/' ? (
+            <Link to="/signin">
               <Button 
                 size="sm" 
                 className="rounded-full bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 flex gap-2 items-center transition-all shadow-md hover:shadow-lg"
-                onClick={() => document.getElementById('chat')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 <MessageCircle size={16} />
-                <span className="hidden md:inline">Start chatting</span>
+                <span className="hidden md:inline">Sign In</span>
               </Button>
-            ) : (
-              <Link to="/#chat">
-                <Button 
-                  size="sm" 
-                  className="rounded-full bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 flex gap-2 items-center transition-all shadow-md hover:shadow-lg"
-                >
-                  <MessageCircle size={16} />
-                  <span className="hidden md:inline">Start chatting</span>
-                </Button>
-              </Link>
-            )}
+            </Link>
           </motion.div>
           
           <Button
@@ -116,7 +99,6 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Mobile menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div 
@@ -160,36 +142,23 @@ const Header = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.4 }}
               >
-                <Link to="/learn-more">
+                <Link to="/signup">
                   <Button 
                     variant="outline" 
                     className="w-full justify-start gap-2 rounded-lg border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5 mb-3"
                   >
                     <Info size={18} />
-                    <span>Learn more</span>
+                    <span>Sign Up</span>
                   </Button>
                 </Link>
-                {location.pathname === '/' ? (
+                <Link to="/signin">
                   <Button 
                     className="w-full justify-start gap-2 rounded-lg bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 transition-all"
-                    onClick={() => {
-                      document.getElementById('chat')?.scrollIntoView({ behavior: 'smooth' });
-                      setMobileMenuOpen(false);
-                    }}
                   >
                     <MessageCircle size={18} />
-                    <span>Start chatting</span>
+                    <span>Sign In</span>
                   </Button>
-                ) : (
-                  <Link to="/#chat">
-                    <Button 
-                      className="w-full justify-start gap-2 rounded-lg bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 transition-all"
-                    >
-                      <MessageCircle size={18} />
-                      <span>Start chatting</span>
-                    </Button>
-                  </Link>
-                )}
+                </Link>
               </motion.div>
             </nav>
           </motion.div>
