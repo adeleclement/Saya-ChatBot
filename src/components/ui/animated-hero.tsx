@@ -1,17 +1,11 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight, MessageCircle, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
-  const titles = useMemo(
-    () => ["supportive", "empathetic", "caring", "thoughtful", "compassionate"],
-    []
-  );
-
+  const titles = useMemo(() => ["supportive", "empathetic", "caring", "thoughtful", "compassionate"], []);
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (titleNumber === titles.length - 1) {
@@ -22,173 +16,118 @@ function Hero() {
     }, 2000);
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
-
-  return (
-    <section className="py-20 md:py-28 lumi-gradient-bg relative overflow-hidden">
+  return <section className="py-20 md:py-28 lumi-gradient-bg relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
-        <motion.div 
-          className="absolute -top-48 -right-48 w-96 h-96 bg-lumi-pink/10 rounded-full blur-3xl opacity-70"
-          animate={{ 
-            scale: [1, 1.1, 1],
-            opacity: [0.6, 0.8, 0.6],
-          }}
-          transition={{ 
-            duration: 8,
-            repeat: Infinity,
-            repeatType: "reverse"
-          }}
-        />
-        <motion.div 
-          className="absolute top-20 -left-24 w-64 h-64 bg-lumi-blue/10 rounded-full blur-3xl opacity-70"
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.7, 0.5, 0.7],
-          }}
-          transition={{ 
-            duration: 7,
-            repeat: Infinity,
-            repeatType: "reverse",
-            delay: 1
-          }}
-        />
+        <motion.div className="absolute -top-48 -right-48 w-96 h-96 bg-lumi-pink/10 rounded-full blur-3xl opacity-70" animate={{
+        scale: [1, 1.1, 1],
+        opacity: [0.6, 0.8, 0.6]
+      }} transition={{
+        duration: 8,
+        repeat: Infinity,
+        repeatType: "reverse"
+      }} />
+        <motion.div className="absolute top-20 -left-24 w-64 h-64 bg-lumi-blue/10 rounded-full blur-3xl opacity-70" animate={{
+        scale: [1, 1.2, 1],
+        opacity: [0.7, 0.5, 0.7]
+      }} transition={{
+        duration: 7,
+        repeat: Infinity,
+        repeatType: "reverse",
+        delay: 1
+      }} />
       </div>
       
       <div className="container max-w-6xl mx-auto px-4 relative">
         <div className="flex gap-8 py-10 items-center justify-center flex-col">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5 gap-2"
-              onClick={() => document.getElementById('resources')?.scrollIntoView({ behavior: 'smooth' })}
-            >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.6
+        }}>
+            <Button variant="outline" size="sm" className="rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5 gap-2" onClick={() => document.getElementById('resources')?.scrollIntoView({
+            behavior: 'smooth'
+          })}>
               Explore our resources <MoveRight className="w-4 h-4" />
             </Button>
           </motion.div>
           
-          <motion.div 
-            className="flex gap-4 flex-col"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
+          <motion.div className="flex gap-4 flex-col" initial={{
+          opacity: 0
+        }} animate={{
+          opacity: 1
+        }} transition={{
+          duration: 0.8,
+          delay: 0.3
+        }}>
             <h1 className="text-4xl md:text-5xl lg:text-6xl max-w-2xl tracking-tighter text-center font-display font-bold text-lumi-purple-dark leading-tight">
               <span>Your</span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
                 &nbsp;
-                {titles.map((title, index) => (
-                  <motion.span
-                    key={index}
-                    className="absolute font-semibold"
-                    initial={{ opacity: 0, y: "-100" }}
-                    transition={{ type: "spring", stiffness: 50 }}
-                    animate={
-                      titleNumber === index
-                        ? {
-                            y: 0,
-                            opacity: 1,
-                          }
-                        : {
-                            y: titleNumber > index ? -150 : 150,
-                            opacity: 0,
-                          }
-                    }
-                  >
+                {titles.map((title, index) => <motion.span key={index} className="absolute font-semibold" initial={{
+                opacity: 0,
+                y: "-100"
+              }} transition={{
+                type: "spring",
+                stiffness: 50
+              }} animate={titleNumber === index ? {
+                y: 0,
+                opacity: 1
+              } : {
+                y: titleNumber > index ? -150 : 150,
+                opacity: 0
+              }}>
                     {title}
-                  </motion.span>
-                ))}
+                  </motion.span>)}
               </span>
               <span> companion for women's wellbeing</span>
             </h1>
 
-            <motion.p 
-              className="text-lg text-lumi-gray-dark mb-8 max-w-2xl text-center mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
+            <motion.p className="text-lg text-lumi-gray-dark mb-8 max-w-2xl text-center mx-auto" initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.8,
+            delay: 0.6
+          }}>
               Lumi provides thoughtful, empathetic, and evidence-based guidance on women's health, reproductive wellness, and personal empowerment.
             </motion.p>
           </motion.div>
           
-          <motion.div 
-            className="flex flex-col sm:flex-row gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-          >
-            <Button 
-              size="lg" 
-              className="rounded-full bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 shadow-md hover:shadow-lg transition-all flex gap-2 items-center"
-              onClick={() => document.getElementById('chat')?.scrollIntoView({ behavior: 'smooth' })}
-            >
+          <motion.div className="flex flex-col sm:flex-row gap-4" initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.8,
+          delay: 0.9
+        }}>
+            <Button size="lg" className="rounded-full bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 shadow-md hover:shadow-lg transition-all flex gap-2 items-center" onClick={() => document.getElementById('chat')?.scrollIntoView({
+            behavior: 'smooth'
+          })}>
               <MessageCircle size={20} />
               <span>Chat with Lumi</span>
             </Button>
             
             <Link to="/learn-more">
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5 flex gap-2 items-center transition-all"
-              >
+              <Button variant="outline" size="lg" className="rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5 flex gap-2 items-center transition-all">
                 <Heart size={20} />
                 <span>Learn more</span>
               </Button>
             </Link>
           </motion.div>
           
-          <motion.div 
-            className="relative mt-10"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.1, duration: 0.8, type: "spring" }}
-          >
-            <motion.div 
-              className="w-64 h-64 md:w-80 md:h-80 bg-gradient-to-br from-lumi-purple via-lumi-pink to-lumi-blue rounded-full opacity-20 blur-xl"
-              animate={{ 
-                scale: [1, 1.1, 1],
-              }}
-              transition={{ 
-                duration: 4,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-            />
-            <motion.div 
-              className="absolute inset-0 flex items-center justify-center"
-              animate={{ rotate: [0, 5, 0, -5, 0] }}
-              transition={{ 
-                duration: 8,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            >
-              <div className="w-40 h-40 md:w-56 md:h-56 bg-white/90 backdrop-blur rounded-full shadow-soft flex items-center justify-center">
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.1, 1],
-                    color: ["#9b87f5", "#F8B9D4", "#9b87f5"] 
-                  }}
-                  transition={{ 
-                    duration: 3,
-                    repeat: Infinity,
-                    repeatType: "reverse"
-                  }}
-                >
-                  <Heart size={80} className="text-lumi-purple" />
-                </motion.div>
-              </div>
-            </motion.div>
-          </motion.div>
+          
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
-
 export { Hero };
