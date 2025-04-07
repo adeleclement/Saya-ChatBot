@@ -54,22 +54,33 @@ const ChatInterface = () => {
         }),
       });
       
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Webhook response:", data);
+      console.log("Raw response status:", response.status);
+      const responseText = await response.text();
+      console.log("Raw response text:", responseText);
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        console.log("Parsed webhook response:", data);
         
-        if (data && data.reply) {
+        if (data && (data.reply || typeof data === 'string')) {
+          const replyContent = data.reply || data;
+          console.log("Using reply content:", replyContent);
+          
           setMessages([...newMessages, { 
             type: 'assistant',
-            content: data.reply
+            content: typeof replyContent === 'string' ? replyContent : JSON.stringify(replyContent)
           }]);
         } else {
           console.error("Invalid response format:", data);
           throw new Error("Invalid response format from webhook");
         }
-      } else {
-        console.error(`Response not OK: ${response.status}`, await response.text());
-        throw new Error(`Failed to get a response: ${response.status}`);
+      } catch (parseError) {
+        console.log("Response is not JSON, using as plain text");
+        setMessages([...newMessages, { 
+          type: 'assistant',
+          content: responseText
+        }]);
       }
     } catch (error) {
       console.error('Error sending message to webhook:', error);
@@ -119,21 +130,33 @@ const ChatInterface = () => {
             }),
           });
           
-          if (response.ok) {
-            const data = await response.json();
-            console.log("Regenerated response:", data);
+          console.log("Raw regenerated response status:", response.status);
+          const responseText = await response.text();
+          console.log("Raw regenerated response text:", responseText);
+          
+          let data;
+          try {
+            data = JSON.parse(responseText);
+            console.log("Parsed regenerated response:", data);
             
-            if (data && data.reply) {
+            if (data && (data.reply || typeof data === 'string')) {
+              const replyContent = data.reply || data;
+              console.log("Using regenerated reply content:", replyContent);
+              
               setMessages(prev => [...prev, { 
                 type: 'assistant', 
-                content: data.reply
+                content: typeof replyContent === 'string' ? replyContent : JSON.stringify(replyContent)
               }]);
             } else {
               console.error("Invalid response format:", data);
               throw new Error("Invalid response format from webhook");
             }
-          } else {
-            throw new Error('Failed to get a regenerated response');
+          } catch (parseError) {
+            console.log("Regenerated response is not JSON, using as plain text");
+            setMessages(prev => [...prev, { 
+              type: 'assistant',
+              content: responseText
+            }]);
           }
         } catch (error) {
           console.error('Error regenerating response:', error);
