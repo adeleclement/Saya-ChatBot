@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 interface Message {
   type: 'user' | 'assistant';
   content: string;
+  isTyping?: boolean;
 }
 
 const ChatInterface = () => {
@@ -30,6 +32,73 @@ const ChatInterface = () => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const extractContent = (data: any): string => {
+    console.log("Extracting content from:", data);
+    
+    // Try to extract content from various possible formats
+    if (typeof data === 'string') {
+      try {
+        const parsed = JSON.parse(data);
+        if (parsed && parsed.content) return parsed.content;
+        if (parsed && typeof parsed === 'string') return parsed;
+      } catch (e) {
+        return data;
+      }
+    }
+    
+    if (data && data.content) return data.content;
+    if (data && data.reply && data.reply.content) return data.reply.content;
+    if (data && data.reply) {
+      if (typeof data.reply === 'string') return data.reply;
+      if (typeof data.reply === 'object' && data.reply.content) return data.reply.content;
+    }
+    
+    // If we can't extract in a standard way, convert to string as fallback
+    return typeof data === 'object' ? JSON.stringify(data) : String(data);
+  };
+
+  const typeMessage = (content: string, messageIndex: number) => {
+    const textToType = content;
+    let currentIndex = 0;
+    
+    // Mark this message as currently typing
+    setMessages(prev => {
+      const updated = [...prev];
+      updated[messageIndex] = {
+        ...updated[messageIndex],
+        content: "",
+        isTyping: true
+      };
+      return updated;
+    });
+    
+    const typingInterval = setInterval(() => {
+      if (currentIndex < textToType.length) {
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[messageIndex] = {
+            ...updated[messageIndex],
+            content: textToType.substring(0, currentIndex + 1),
+            isTyping: true
+          };
+          return updated;
+        });
+        currentIndex++;
+        scrollToBottom();
+      } else {
+        clearInterval(typingInterval);
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[messageIndex] = {
+            ...updated[messageIndex],
+            isTyping: false
+          };
+          return updated;
+        });
+      }
+    }, 20); // Adjust speed of typing here (lower = faster)
   };
 
   const handleSendMessage = async () => {
@@ -58,30 +127,33 @@ const ChatInterface = () => {
       const responseText = await response.text();
       console.log("Raw response text:", responseText);
       
-      let data;
+      let parsedData;
+      let contentToShow = "";
+      
       try {
-        data = JSON.parse(responseText);
-        console.log("Parsed webhook response:", data);
-        
-        if (data && (data.reply || typeof data === 'string')) {
-          const replyContent = data.reply || data;
-          console.log("Using reply content:", replyContent);
-          
-          setMessages([...newMessages, { 
-            type: 'assistant',
-            content: typeof replyContent === 'string' ? replyContent : JSON.stringify(replyContent)
-          }]);
-        } else {
-          console.error("Invalid response format:", data);
-          throw new Error("Invalid response format from webhook");
-        }
+        parsedData = JSON.parse(responseText);
+        console.log("Parsed webhook response:", parsedData);
+        contentToShow = extractContent(parsedData);
       } catch (parseError) {
         console.log("Response is not JSON, using as plain text");
-        setMessages([...newMessages, { 
-          type: 'assistant',
-          content: responseText
-        }]);
+        contentToShow = responseText;
       }
+      
+      console.log("Final content to display:", contentToShow);
+      
+      // Add a placeholder message that will be filled by the typing effect
+      const newMessageIndex = newMessages.length;
+      setMessages([...newMessages, { 
+        type: 'assistant',
+        content: "",
+        isTyping: true
+      }]);
+      
+      // Start the typing effect
+      setTimeout(() => {
+        typeMessage(contentToShow, newMessageIndex);
+      }, 500);
+      
     } catch (error) {
       console.error('Error sending message to webhook:', error);
       toast({
@@ -134,30 +206,35 @@ const ChatInterface = () => {
           const responseText = await response.text();
           console.log("Raw regenerated response text:", responseText);
           
-          let data;
+          let parsedData;
+          let contentToShow = "";
+          
           try {
-            data = JSON.parse(responseText);
-            console.log("Parsed regenerated response:", data);
-            
-            if (data && (data.reply || typeof data === 'string')) {
-              const replyContent = data.reply || data;
-              console.log("Using regenerated reply content:", replyContent);
-              
-              setMessages(prev => [...prev, { 
-                type: 'assistant', 
-                content: typeof replyContent === 'string' ? replyContent : JSON.stringify(replyContent)
-              }]);
-            } else {
-              console.error("Invalid response format:", data);
-              throw new Error("Invalid response format from webhook");
-            }
+            parsedData = JSON.parse(responseText);
+            console.log("Parsed regenerated response:", parsedData);
+            contentToShow = extractContent(parsedData);
           } catch (parseError) {
             console.log("Regenerated response is not JSON, using as plain text");
-            setMessages(prev => [...prev, { 
-              type: 'assistant',
-              content: responseText
-            }]);
+            contentToShow = responseText;
           }
+          
+          console.log("Final regenerated content to display:", contentToShow);
+          
+          // Add placeholder message
+          const newMessages = [...messages.slice(0, messages.length - 1)];
+          const newMessageIndex = newMessages.length;
+          
+          setMessages([...newMessages, { 
+            type: 'assistant',
+            content: "",
+            isTyping: true
+          }]);
+          
+          // Start typing effect
+          setTimeout(() => {
+            typeMessage(contentToShow, newMessageIndex);
+          }, 500);
+          
         } catch (error) {
           console.error('Error regenerating response:', error);
           toast({
@@ -166,7 +243,7 @@ const ChatInterface = () => {
             variant: "destructive",
           });
           
-          setMessages(prev => [...prev, { 
+          setMessages(prev => [...prev.slice(0, prev.length - 1), { 
             type: 'assistant',
             content: "I'm sorry, I couldn't regenerate my response. Let's continue our conversation."
           }]);
@@ -220,13 +297,18 @@ const ChatInterface = () => {
                         </>
                       )}
                     </div>
-                    <p className="whitespace-pre-wrap">{message.content}</p>
+                    <p className="whitespace-pre-wrap">
+                      {message.content}
+                      {message.isTyping && (
+                        <span className="inline-block w-1 h-4 ml-1 bg-lumi-purple animate-pulse"></span>
+                      )}
+                    </p>
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
             
-            {isLoading && (
+            {isLoading && !messages[messages.length - 1]?.isTyping && (
               <motion.div 
                 className="flex justify-start mb-4"
                 initial={{ opacity: 0, y: 20 }}
@@ -272,7 +354,7 @@ const ChatInterface = () => {
               </Button>
             </div>
             
-            {messages.length > 1 && messages[messages.length - 1].type === 'assistant' && (
+            {messages.length > 1 && messages[messages.length - 1].type === 'assistant' && !messages[messages.length - 1].isTyping && (
               <div className="flex justify-center">
                 <Button
                   variant="ghost"
