@@ -6,19 +6,15 @@ import { useLocation } from 'react-router-dom';
 
 export const GlowMenuDemo = () => {
   const location = useLocation();
-  const [activeItem, setActiveItem] = useState('Chat');
+  const [activeItem, setActiveItem] = useState('');
 
   useEffect(() => {
     if (location.pathname === '/' || location.pathname.includes('/#chat')) {
-      setActiveItem('Chat');
+      setActiveItem('');
     } else if (location.pathname.includes('/resources')) {
-      setActiveItem('Resources');
+      setActiveItem('');
     } else if (location.pathname.includes('/about')) {
-      setActiveItem('About');
-    } else if (location.pathname.includes('/signin')) {
-      setActiveItem('Sign In');
-    } else if (location.pathname.includes('/signup')) {
-      setActiveItem('Sign Up');
+      setActiveItem('');
     }
   }, [location.pathname]);
 
@@ -50,7 +46,7 @@ export const GlowMenuDemo = () => {
     <MenuBar 
       items={menuItems} 
       activeItem={activeItem} 
-      onItemClick={(label) => setActiveItem(label)} 
+      onItemClick={(label) => setActiveItem('')} 
     />
   );
 };
