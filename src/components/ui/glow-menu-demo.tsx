@@ -1,10 +1,26 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MenuBar } from './glow-menu';
 import { MessageCircle, BookOpen, Info } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 export const GlowMenuDemo = () => {
+  const location = useLocation();
   const [activeItem, setActiveItem] = useState('Chat');
+
+  useEffect(() => {
+    if (location.pathname === '/' || location.pathname.includes('/#chat')) {
+      setActiveItem('Chat');
+    } else if (location.pathname.includes('/resources')) {
+      setActiveItem('Resources');
+    } else if (location.pathname.includes('/about')) {
+      setActiveItem('About');
+    } else if (location.pathname.includes('/signin')) {
+      setActiveItem('Sign In');
+    } else if (location.pathname.includes('/signup')) {
+      setActiveItem('Sign Up');
+    }
+  }, [location.pathname]);
 
   const menuItems = [
     {

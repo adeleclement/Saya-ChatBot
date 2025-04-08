@@ -5,6 +5,7 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface MenuItem {
   icon: LucideIcon;
@@ -42,17 +43,6 @@ const glowVariants = {
   },
 };
 
-const navGlowVariants = {
-  initial: { opacity: 0 },
-  hover: {
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-      ease: [0.4, 0, 0.2, 1],
-    },
-  },
-};
-
 const sharedTransition = {
   type: "spring",
   stiffness: 100,
@@ -66,17 +56,11 @@ export const MenuBar = React.forwardRef<HTMLDivElement, MenuBarProps>(
       <nav
         ref={ref}
         className={cn(
-          "p-2 rounded-2xl bg-gradient-to-b from-background/80 to-background/40 backdrop-blur-lg border border-border/40 shadow-lg relative overflow-hidden",
+          "p-2 rounded-2xl backdrop-blur-lg",
           className,
         )}
         {...props}
       >
-        <motion.div
-          className="absolute -inset-2 bg-gradient-radial from-transparent via-blue-400/20 via-30% via-purple-400/20 via-60% via-red-400/20 via-90% to-transparent rounded-3xl z-0 pointer-events-none"
-          variants={navGlowVariants}
-          initial="initial"
-          whileHover="hover"
-        />
         <ul className="flex items-center gap-2 relative z-10">
           {items.map((item) => {
             const Icon = item.icon;
@@ -84,7 +68,8 @@ export const MenuBar = React.forwardRef<HTMLDivElement, MenuBarProps>(
 
             return (
               <motion.li key={item.label} className="relative">
-                <button
+                <Link
+                  to={item.href}
                   onClick={() => onItemClick?.(item.label)}
                   className="block w-full"
                 >
@@ -156,7 +141,7 @@ export const MenuBar = React.forwardRef<HTMLDivElement, MenuBarProps>(
                       <span>{item.label}</span>
                     </motion.div>
                   </motion.div>
-                </button>
+                </Link>
               </motion.li>
             );
           })}
