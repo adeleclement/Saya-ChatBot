@@ -1,10 +1,10 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { SendHorizontal, User, Heart, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Message {
   type: 'user' | 'assistant';
@@ -27,17 +27,29 @@ const ChatInterface = () => {
   const webhookUrl = "https://hook.eu2.make.com/bujbos6s17kfulplbqi0eq4w1hvo26ou";
 
   useEffect(() => {
-    scrollToBottom();
+    const scrollTimer = setTimeout(() => {
+      scrollToBottom();
+    }, 100);
+    
+    return () => clearTimeout(scrollTimer);
+  }, [messages]);
+
+  useEffect(() => {
+    const typingMessage = messages.find(msg => msg.isTyping);
+    if (typingMessage) {
+      scrollToBottom();
+    }
   }, [messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const extractContent = (data: any): string => {
     console.log("Extracting content from:", data);
     
-    // Try to extract content from various possible formats
     if (typeof data === 'string') {
       try {
         const parsed = JSON.parse(data);
@@ -55,7 +67,6 @@ const ChatInterface = () => {
       if (typeof data.reply === 'object' && data.reply.content) return data.reply.content;
     }
     
-    // If we can't extract in a standard way, convert to string as fallback
     return typeof data === 'object' ? JSON.stringify(data) : String(data);
   };
 
@@ -63,7 +74,6 @@ const ChatInterface = () => {
     const textToType = content;
     let currentIndex = 0;
     
-    // Mark this message as currently typing
     setMessages(prev => {
       const updated = [...prev];
       updated[messageIndex] = {
@@ -97,8 +107,9 @@ const ChatInterface = () => {
           };
           return updated;
         });
+        scrollToBottom();
       }
-    }, 20); // Adjust speed of typing here (lower = faster)
+    }, 20);
   };
 
   const handleSendMessage = async () => {
@@ -141,7 +152,6 @@ const ChatInterface = () => {
       
       console.log("Final content to display:", contentToShow);
       
-      // Add a placeholder message that will be filled by the typing effect
       const newMessageIndex = newMessages.length;
       setMessages([...newMessages, { 
         type: 'assistant',
@@ -149,7 +159,6 @@ const ChatInterface = () => {
         isTyping: true
       }]);
       
-      // Start the typing effect
       setTimeout(() => {
         typeMessage(contentToShow, newMessageIndex);
       }, 500);
@@ -220,7 +229,6 @@ const ChatInterface = () => {
           
           console.log("Final regenerated content to display:", contentToShow);
           
-          // Add placeholder message
           const newMessages = [...messages.slice(0, messages.length - 1)];
           const newMessageIndex = newMessages.length;
           
@@ -230,7 +238,6 @@ const ChatInterface = () => {
             isTyping: true
           }]);
           
-          // Start typing effect
           setTimeout(() => {
             typeMessage(contentToShow, newMessageIndex);
           }, 500);
@@ -265,7 +272,7 @@ const ChatInterface = () => {
         </div>
         
         <div className="neo-card backdrop-blur-md bg-white/80 border border-lumi-purple/20 p-4 md:p-6 max-w-3xl mx-auto rounded-2xl shadow-soft transition-all hover:shadow-glow">
-          <div className="h-[450px] overflow-y-auto mb-4 p-2 custom-scrollbar">
+          <ScrollArea className="h-[450px] mb-4 p-2 custom-scrollbar">
             <AnimatePresence initial={false}>
               {messages.map((message, index) => (
                 <motion.div 
@@ -331,7 +338,7 @@ const ChatInterface = () => {
               </motion.div>
             )}
             <div ref={messagesEndRef} />
-          </div>
+          </ScrollArea>
           
           <div className="flex flex-col gap-3">
             <div className="flex gap-2">
