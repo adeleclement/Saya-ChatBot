@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -6,7 +5,8 @@ import ResourceCard from '@/components/ResourceCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
-import { Book, Heart, Activity, Brain, Moon, User, DollarSign, Search, Filter } from 'lucide-react';
+import { Book, Heart, Activity, Brain, Moon, User, DollarSign, Search, Filter, Shield } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Resources = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -127,6 +127,15 @@ const Resources = () => {
               <p className="text-lumi-gray-dark max-w-2xl mx-auto">
                 Explore our comprehensive collection of articles, guides, and tools to support your health journey.
               </p>
+              <div className="mt-2">
+                <Link 
+                  to="/admin/resources" 
+                  className="inline-flex items-center text-sm text-lumi-purple hover:text-lumi-purple-dark transition-colors mt-2"
+                >
+                  <Shield className="h-3 w-3 mr-1" />
+                  <span>Admin Access</span>
+                </Link>
+              </div>
             </motion.div>
             
             <motion.div 

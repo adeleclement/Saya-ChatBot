@@ -11,6 +11,7 @@ import LearnMore from "./pages/LearnMore";
 import LearnMoreGeneral from "./pages/LearnMoreGeneral";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import AdminResources from "./pages/AdminResources";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/learn-more/:topic" element={<LearnMore />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/admin/resources" element={<AdminResources />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
