@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -29,8 +28,18 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+// Define Resource type to ensure consistent typing throughout the component
+type Resource = {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  content: string;
+  linkSlug: string;
+};
+
 // Sample data for existing resources
-const sampleResources = [
+const sampleResources: Resource[] = [
   {
     id: 1,
     title: "Understanding Reproductive Health",
@@ -63,8 +72,8 @@ const AdminResources = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [password, setPassword] = useState('');
-  const [resources, setResources] = useState(sampleResources);
-  const [editingResource, setEditingResource] = useState<null | (typeof sampleResources)[0]>(null);
+  const [resources, setResources] = useState<Resource[]>(sampleResources);
+  const [editingResource, setEditingResource] = useState<Resource | null>(null);
   
   // Mock admin password - in a real app, this would be authenticated through a backend
   const ADMIN_PASSWORD = "admin123";
@@ -114,7 +123,7 @@ const AdminResources = () => {
     // In a real application, this would send data to your backend/database
     // For demonstration, we'll simulate an API call
     setTimeout(() => {
-      const newResource = {
+      const newResource: Resource = {
         id: resources.length + 1,
         ...data
       };
@@ -131,7 +140,7 @@ const AdminResources = () => {
     }, 1500);
   };
 
-  const startEditing = (resource: (typeof resources)[0]) => {
+  const startEditing = (resource: Resource) => {
     setEditingResource(resource);
     editForm.reset({
       title: resource.title,
@@ -150,7 +159,14 @@ const AdminResources = () => {
     // Simulate API call
     setTimeout(() => {
       const updatedResources = resources.map(res => 
-        res.id === editingResource.id ? { ...res, ...data } : res
+        res.id === editingResource.id ? { 
+          ...res, 
+          title: data.title,
+          description: data.description,
+          content: data.content,
+          category: data.category,
+          linkSlug: data.linkSlug
+        } : res
       );
       
       setResources(updatedResources);
