@@ -22,16 +22,13 @@ const ChatInterface = () => {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
   const webhookUrl = "https://hook.eu2.make.com/bujbos6s17kfulplbqi0eq4w1hvo26ou";
 
   useEffect(() => {
-    const scrollTimer = setTimeout(() => {
-      scrollToBottom();
-    }, 100);
-    
-    return () => clearTimeout(scrollTimer);
+    scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
@@ -43,7 +40,16 @@ const ChatInterface = () => {
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      requestAnimationFrame(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        
+        if (scrollAreaRef.current) {
+          const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+          if (scrollContainer) {
+            scrollContainer.scrollTop = scrollContainer.scrollHeight;
+          }
+        }
+      });
     }
   };
 
@@ -272,72 +278,77 @@ const ChatInterface = () => {
         </div>
         
         <div className="neo-card backdrop-blur-md bg-white/80 border border-lumi-purple/20 p-4 md:p-6 max-w-3xl mx-auto rounded-2xl shadow-soft transition-all hover:shadow-glow">
-          <ScrollArea className="h-[450px] mb-4 p-2 custom-scrollbar">
-            <AnimatePresence initial={false}>
-              {messages.map((message, index) => (
+          <ScrollArea 
+            className="h-[450px] mb-4 p-2 custom-scrollbar" 
+            ref={scrollAreaRef}
+          >
+            <div className="min-h-full flex flex-col">
+              <AnimatePresence initial={false}>
+                {messages.map((message, index) => (
+                  <motion.div 
+                    key={index} 
+                    className={`mb-4 flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                  >
+                    <div className={`max-w-[80%] rounded-2xl p-3 ${
+                      message.type === 'user' 
+                        ? 'bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white rounded-tr-none shadow-md' 
+                        : 'bg-white border border-lumi-purple/10 text-lumi-gray-dark rounded-tl-none shadow-sm'
+                    }`}>
+                      <div className="flex items-center gap-2 mb-1">
+                        {message.type === 'assistant' ? (
+                          <>
+                            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-lumi-pink to-lumi-purple flex items-center justify-center">
+                              <Heart size={12} className="text-white" />
+                            </div>
+                            <span className="font-medium text-lumi-purple-dark">Saya</span>
+                          </>
+                        ) : (
+                          <>
+                            <div className="w-5 h-5 rounded-full bg-lumi-gray-light flex items-center justify-center">
+                              <User size={12} className="text-lumi-purple" />
+                            </div>
+                            <span className="font-medium text-white">You</span>
+                          </>
+                        )}
+                      </div>
+                      <p className="whitespace-pre-wrap">
+                        {message.content}
+                        {message.isTyping && (
+                          <span className="inline-block w-1 h-4 ml-1 bg-lumi-purple animate-pulse"></span>
+                        )}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            
+              {isLoading && !messages[messages.length - 1]?.isTyping && (
                 <motion.div 
-                  key={index} 
-                  className={`mb-4 flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className="flex justify-start mb-4"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <div className={`max-w-[80%] rounded-2xl p-3 ${
-                    message.type === 'user' 
-                      ? 'bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white rounded-tr-none shadow-md' 
-                      : 'bg-white border border-lumi-purple/10 text-lumi-gray-dark rounded-tl-none shadow-sm'
-                  }`}>
+                  <div className="bg-white border border-lumi-purple/10 text-lumi-gray-dark rounded-2xl rounded-tl-none p-3 shadow-sm">
                     <div className="flex items-center gap-2 mb-1">
-                      {message.type === 'assistant' ? (
-                        <>
-                          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-lumi-pink to-lumi-purple flex items-center justify-center">
-                            <Heart size={12} className="text-white" />
-                          </div>
-                          <span className="font-medium text-lumi-purple-dark">Saya</span>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-5 h-5 rounded-full bg-lumi-gray-light flex items-center justify-center">
-                            <User size={12} className="text-lumi-purple" />
-                          </div>
-                          <span className="font-medium text-white">You</span>
-                        </>
-                      )}
+                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-lumi-pink to-lumi-purple flex items-center justify-center">
+                        <Heart size={12} className="text-white" />
+                      </div>
+                      <span className="font-medium text-lumi-purple-dark">Saya</span>
                     </div>
-                    <p className="whitespace-pre-wrap">
-                      {message.content}
-                      {message.isTyping && (
-                        <span className="inline-block w-1 h-4 ml-1 bg-lumi-purple animate-pulse"></span>
-                      )}
-                    </p>
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 rounded-full bg-lumi-purple animate-bounce"></div>
+                      <div className="w-2 h-2 rounded-full bg-lumi-purple animate-bounce delay-100"></div>
+                      <div className="w-2 h-2 rounded-full bg-lumi-purple animate-bounce delay-200"></div>
+                    </div>
                   </div>
                 </motion.div>
-              ))}
-            </AnimatePresence>
-            
-            {isLoading && !messages[messages.length - 1]?.isTyping && (
-              <motion.div 
-                className="flex justify-start mb-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="bg-white border border-lumi-purple/10 text-lumi-gray-dark rounded-2xl rounded-tl-none p-3 shadow-sm">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-lumi-pink to-lumi-purple flex items-center justify-center">
-                      <Heart size={12} className="text-white" />
-                    </div>
-                    <span className="font-medium text-lumi-purple-dark">Saya</span>
-                  </div>
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 rounded-full bg-lumi-purple animate-bounce"></div>
-                    <div className="w-2 h-2 rounded-full bg-lumi-purple animate-bounce delay-100"></div>
-                    <div className="w-2 h-2 rounded-full bg-lumi-purple animate-bounce delay-200"></div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-            <div ref={messagesEndRef} />
+              )}
+              <div ref={messagesEndRef} className="h-1" />
+            </div>
           </ScrollArea>
           
           <div className="flex flex-col gap-3">
