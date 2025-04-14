@@ -73,7 +73,7 @@ const WelcomeHero = () => {
               className="text-lg text-lumi-gray-dark mb-8"
               variants={itemVariants}
             >
-              Yara provides thoughtful, empathetic, and evidence-based guidance on women's health, reproductive wellness, and personal empowerment.
+              Saya provides thoughtful, empathetic, and evidence-based guidance on women's health, reproductive wellness, and personal empowerment.
             </motion.p>
             <motion.div 
               className="flex flex-col sm:flex-row gap-4"
@@ -85,7 +85,7 @@ const WelcomeHero = () => {
                 onClick={() => document.getElementById('chat')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 <MessageCircle size={20} />
-                <span>Chat with Yara</span>
+                <span>Chat with Saya</span>
               </Button>
               <Button 
                 variant="outline" 

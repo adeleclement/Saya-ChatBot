@@ -10,7 +10,7 @@ const Footer = () => {
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-lumi-purple to-lumi-pink flex items-center justify-center">
                 <Heart size={16} className="text-white" />
               </div>
-              <h2 className="text-xl font-display font-bold text-lumi-purple">Yara</h2>
+              <h2 className="text-xl font-display font-bold text-lumi-purple">Saya</h2>
             </div>
             <p className="text-lumi-gray-dark mb-4">
               Your compassionate companion for women's health and wellbeing, providing evidence-based information and supportive guidance.
@@ -42,7 +42,7 @@ const Footer = () => {
             <h3 className="font-display font-semibold text-lumi-purple-dark mb-4">About</h3>
             <ul className="space-y-2">
               <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">Our Mission</a></li>
-              <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">How Yara Works</a></li>
+              <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">How Saya Works</a></li>
               <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">Medical Disclaimer</a></li>
               <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">Privacy Policy</a></li>
             </ul>
@@ -52,7 +52,7 @@ const Footer = () => {
         <div className="text-center pt-6 border-t border-lumi-purple/10">
           <p className="text-sm text-lumi-gray">
             <span className="block md:inline mb-2 md:mb-0">
-              © {new Date().getFullYear()} Yara Wellness Assistant. All rights reserved.
+              © {new Date().getFullYear()} Saya Wellness Assistant. All rights reserved.
             </span>
             <span className="hidden md:inline mx-2">•</span>
             <span className="block md:inline">
@@ -60,7 +60,7 @@ const Footer = () => {
             </span>
           </p>
           <p className="text-xs text-lumi-gray mt-2">
-            Yara is an AI assistant and does not replace professional medical advice, diagnosis, or treatment.
+            Saya is an AI assistant and does not replace professional medical advice, diagnosis, or treatment.
             Always consult qualified healthcare providers for medical concerns.
           </p>
         </div>

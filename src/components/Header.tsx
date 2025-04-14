@@ -46,7 +46,7 @@ const Header = () => {
           transition={{ duration: 0.5 }}
         >
           <Link to="/" className="flex items-center gap-2">
-            <h1 className="text-xl font-display font-bold bg-gradient-to-r from-lumi-purple to-lumi-purple-dark bg-clip-text text-transparent">Yara</h1>
+            <h1 className="text-xl font-display font-bold bg-gradient-to-r from-lumi-purple to-lumi-purple-dark bg-clip-text text-transparent">Saya</h1>
           </Link>
         </motion.div>
         

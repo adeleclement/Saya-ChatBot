@@ -1,11 +1,14 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight, MessageCircle, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(() => ["supportive", "empathetic", "caring", "thoughtful", "compassionate"], []);
+  
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (titleNumber === titles.length - 1) {
@@ -16,6 +19,7 @@ function Hero() {
     }, 2000);
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
+  
   return <section className="py-20 md:py-28 lumi-gradient-bg relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
         <motion.div className="absolute -top-48 -right-48 w-96 h-96 bg-lumi-pink/10 rounded-full blur-3xl opacity-70" animate={{
@@ -96,7 +100,7 @@ function Hero() {
             duration: 0.8,
             delay: 0.6
           }}>
-              Lumi provides thoughtful, empathetic, and evidence-based guidance on women's health, reproductive wellness, and personal empowerment.
+              Saya provides thoughtful, empathetic, and evidence-based guidance on women's health, reproductive wellness, and personal empowerment.
             </motion.p>
           </motion.div>
           
@@ -114,7 +118,7 @@ function Hero() {
             behavior: 'smooth'
           })}>
               <MessageCircle size={20} />
-              <span>Chat with Lumi</span>
+              <span>Chat with Saya</span>
             </Button>
             
             <Link to="/learn-more">
@@ -124,10 +128,9 @@ function Hero() {
               </Button>
             </Link>
           </motion.div>
-          
-          
         </div>
       </div>
     </section>;
 }
+
 export { Hero };
