@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Heart, ExternalLink, Mail, Instagram, Twitter } from 'lucide-react';
 const Footer = () => {
@@ -41,7 +42,7 @@ const Footer = () => {
             <h3 className="font-display font-semibold text-lumi-purple-dark mb-4">About</h3>
             <ul className="space-y-2">
               <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">Our Mission</a></li>
-              <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">How Lumi Works</a></li>
+              <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">How Yara Works</a></li>
               <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">Medical Disclaimer</a></li>
               <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">Privacy Policy</a></li>
             </ul>
@@ -51,7 +52,7 @@ const Footer = () => {
         <div className="text-center pt-6 border-t border-lumi-purple/10">
           <p className="text-sm text-lumi-gray">
             <span className="block md:inline mb-2 md:mb-0">
-              © {new Date().getFullYear()} Lumi Wellness Assistant. All rights reserved.
+              © {new Date().getFullYear()} Yara Wellness Assistant. All rights reserved.
             </span>
             <span className="hidden md:inline mx-2">•</span>
             <span className="block md:inline">
@@ -59,7 +60,7 @@ const Footer = () => {
             </span>
           </p>
           <p className="text-xs text-lumi-gray mt-2">
-            Lumi is an AI assistant and does not replace professional medical advice, diagnosis, or treatment.
+            Yara is an AI assistant and does not replace professional medical advice, diagnosis, or treatment.
             Always consult qualified healthcare providers for medical concerns.
           </p>
         </div>

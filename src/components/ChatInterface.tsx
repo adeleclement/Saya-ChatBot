@@ -16,7 +16,7 @@ const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       type: 'assistant' as const,
-      content: "Hello! I'm Lumi, your caring companion for women's health and wellbeing. How can I support you today?"
+      content: "Hello! I'm Yara, your caring companion for women's health and wellbeing. How can I support you today?"
     }
   ]);
   const [inputText, setInputText] = useState('');
@@ -265,7 +265,7 @@ const ChatInterface = () => {
     <section id="chat" className="py-16 bg-gradient-to-br from-white to-lumi-purple/5">
       <div className="container max-w-4xl mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-display font-bold text-lumi-purple-dark mb-4">Chat with Lumi</h2>
+          <h2 className="text-3xl font-display font-bold text-lumi-purple-dark mb-4">Chat with Yara</h2>
           <p className="text-lumi-gray-dark max-w-2xl mx-auto">
             Ask me about women's health, reproductive wellness, emotional wellbeing, or any other topics you're curious about.
           </p>
@@ -293,7 +293,7 @@ const ChatInterface = () => {
                           <div className="w-5 h-5 rounded-full bg-gradient-to-br from-lumi-pink to-lumi-purple flex items-center justify-center">
                             <Heart size={12} className="text-white" />
                           </div>
-                          <span className="font-medium text-lumi-purple-dark">Lumi</span>
+                          <span className="font-medium text-lumi-purple-dark">Yara</span>
                         </>
                       ) : (
                         <>
@@ -327,7 +327,7 @@ const ChatInterface = () => {
                     <div className="w-5 h-5 rounded-full bg-gradient-to-br from-lumi-pink to-lumi-purple flex items-center justify-center">
                       <Heart size={12} className="text-white" />
                     </div>
-                    <span className="font-medium text-lumi-purple-dark">Lumi</span>
+                    <span className="font-medium text-lumi-purple-dark">Yara</span>
                   </div>
                   <div className="flex gap-1">
                     <div className="w-2 h-2 rounded-full bg-lumi-purple animate-bounce"></div>
@@ -376,7 +376,7 @@ const ChatInterface = () => {
             )}
             
             <p className="text-xs text-lumi-gray text-center mt-2">
-              Lumi provides general information and support, not professional medical advice.
+              Yara provides general information and support, not professional medical advice.
               Always consult healthcare providers for medical concerns.
             </p>
           </div>
