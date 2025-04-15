@@ -66,9 +66,7 @@ const About = () => {
             duration: 0.5,
             delay: 0.3
           }} variants={fadeIn}>
-              <h2 className="text-2xl md:text-3xl font-display font-semibold text-lumi-purple-dark mb-8 text-center">
-                What Makes Lumi Special
-              </h2>
+              <h2 className="text-2xl md:text-3xl font-display font-semibold text-lumi-purple-dark mb-8 text-center">What Makes Saya Special</h2>
               <div className="grid md:grid-cols-3 gap-8">
                 {[{
                 icon: <Activity size={36} className="text-lumi-purple" />,
@@ -102,9 +100,7 @@ const About = () => {
             delay: 0.4
           }} variants={fadeIn}>
               <div className="text-center mb-8">
-                <h2 className="text-2xl md:text-3xl font-display font-semibold text-lumi-purple-dark mb-4">
-                  The Team Behind Lumi
-                </h2>
+                <h2 className="text-2xl md:text-3xl font-display font-semibold text-lumi-purple-dark mb-4">The Team Behind Saya</h2>
                 <p className="text-lumi-gray-dark max-w-3xl mx-auto">
                   Lumi is developed by a diverse team of healthcare professionals, engineers, and designers committed to creating technology that makes a positive difference in women's lives.
                 </p>
@@ -115,9 +111,7 @@ const About = () => {
                       <Star size={32} className="text-lumi-purple" />
                     </div>
                     <h3 className="text-lg font-display font-semibold text-lumi-purple-dark mb-1">Our Specialists</h3>
-                    <p className="text-lumi-gray-dark text-sm">
-                      Healthcare experts who ensure Lumi provides accurate, helpful information.
-                    </p>
+                    <p className="text-lumi-gray-dark text-sm">Healthcare experts who ensure saya provides accurate, helpful information.</p>
                   </div>)}
               </div>
             </motion.div>
