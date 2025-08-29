@@ -25,10 +25,11 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
-				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
-				},
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+          vibrant: 'hsl(var(--primary-vibrant))'
+        },
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
@@ -91,10 +92,11 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
-			boxShadow: {
-				'soft': '0 4px 20px rgba(155, 135, 245, 0.1)',
-				'glow': '0 0 15px rgba(155, 135, 245, 0.3)'
-			},
+          boxShadow: {
+            'soft': '0 4px 20px rgba(155, 135, 245, 0.1)',
+            'glow': '0 0 15px rgba(155, 135, 245, 0.3)',
+            'elegant': '0 10px 30px -10px rgba(155, 135, 245, 0.2)'
+          },
 			keyframes: {
 				'accordion-down': {
 					from: {

@@ -354,8 +354,8 @@ const ChatInterface = () => {
           <div className="flex flex-col gap-3">
             <div className="flex gap-2">
               <Textarea 
-                className="lumi-input resize-none border-lumi-purple/20 focus:border-lumi-purple focus-visible:ring-1 focus:ring-lumi-purple rounded-xl bg-white/80 backdrop-blur-sm transition-all"
-                placeholder="Type your message here..."
+                className="lumi-input resize-none border-primary/20 focus:border-primary focus-visible:ring-1 focus:ring-primary rounded-xl bg-white/80 backdrop-blur-sm transition-all"
+                placeholder="What's on your mind today?"
                 rows={1}
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}

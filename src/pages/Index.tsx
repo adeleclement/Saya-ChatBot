@@ -2,6 +2,7 @@
 import React from 'react';
 import Header from '@/components/Header';
 import { Hero } from '@/components/ui/animated-hero';
+import WhySayaSection from '@/components/WhySayaSection';
 import ChatInterface from '@/components/ChatInterface';
 import ResourcesSection from '@/components/ResourcesSection';
 import Footer from '@/components/Footer';
@@ -13,6 +14,7 @@ const Index = () => {
       <Header />
       <main className="flex-1">
         <Hero />
+        <WhySayaSection />
         <ChatInterface />
         <ResourcesSection />
       </main>

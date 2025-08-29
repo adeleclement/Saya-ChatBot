@@ -41,10 +41,13 @@ const Footer = () => {
           <div>
             <h3 className="font-display font-semibold text-lumi-purple-dark mb-4">About</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">Our Mission</a></li>
+              <li><a href="/about" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">Our Mission</a></li>
               <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">How Saya Works</a></li>
               <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">Medical Disclaimer</a></li>
               <li><a href="#" className="text-lumi-gray-dark hover:text-lumi-purple transition-colors">Privacy Policy</a></li>
+              <li><a href="/admin/resources" className="text-lumi-purple hover:text-lumi-purple-dark transition-colors text-sm flex items-center gap-1">
+                <span>Admin Access</span>
+              </a></li>
             </ul>
           </div>
         </div>

@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ResourceCard from '@/components/ResourceCard';
+import EnhancedResourceCard from '@/components/EnhancedResourceCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
-import { Book, Heart, Activity, Brain, Moon, User, DollarSign, Search, Filter, Shield } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Book, Heart, Activity, Brain, Moon, User, DollarSign, Search, Filter } from 'lucide-react';
 
 const Resources = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -29,31 +28,31 @@ const Resources = () => {
       description: "A comprehensive guide to the four phases of the menstrual cycle and how they affect your body and mood.",
       icon: <Heart size={20} />,
       link: "/learn-more/menstrual-cycle",
-      category: 'reproductive'
+      category: 'Reproductive Health'
     },
     {
       id: 2,
-      title: "Pregnancy Nutrition Guide",
+      title: "Pregnancy Nutrition Guide", 
       description: "Essential nutrients and meal planning advice for a healthy pregnancy and fetal development.",
       icon: <User size={20} />,
       link: "/learn-more/pregnancy-nutrition",
-      category: 'pregnancy'
+      category: 'Pregnancy'
     },
     {
       id: 3,
-      title: "Women's Strength Training Fundamentals",
+      title: "Strength Training for Women",
       description: "Evidence-based approaches to strength training for women at any fitness level.",
       icon: <Activity size={20} />,
       link: "/learn-more/strength-training",
-      category: 'physical'
+      category: 'Physical Wellness'
     },
     {
       id: 4,
       title: "Managing Anxiety and Stress",
       description: "Practical techniques and strategies for women to address anxiety and stress in everyday life.",
       icon: <Brain size={20} />,
-      link: "/learn-more/anxiety-management",
-      category: 'mental'
+      link: "/learn-more/anxiety-management", 
+      category: 'Mental Health'
     },
     {
       id: 5,
@@ -61,15 +60,15 @@ const Resources = () => {
       description: "How hormonal fluctuations affect sleep and strategies to improve sleep quality throughout the month.",
       icon: <Moon size={20} />,
       link: "/learn-more/sleep-optimization",
-      category: 'sleep'
+      category: 'Sleep & Rest'
     },
     {
       id: 6,
-      title: "Women's Financial Independence",
+      title: "Women's Financial Independence", 
       description: "A practical guide to financial literacy, investing, and building long-term financial security.",
       icon: <DollarSign size={20} />,
       link: "/learn-more/financial-independence",
-      category: 'financial'
+      category: 'Financial Wellness'
     },
     {
       id: 7,
@@ -77,7 +76,7 @@ const Resources = () => {
       description: "An overview of different contraceptive methods, their effectiveness, benefits, and considerations.",
       icon: <Heart size={20} />,
       link: "/learn-more/birth-control",
-      category: 'reproductive'
+      category: 'Reproductive Health'
     },
     {
       id: 8,
@@ -85,15 +84,15 @@ const Resources = () => {
       description: "Physical and emotional aspects of recovery after childbirth and how to navigate this important transition.",
       icon: <User size={20} />,
       link: "/learn-more/postpartum-recovery",
-      category: 'pregnancy'
+      category: 'Pregnancy'
     },
     {
       id: 9,
-      title: "Women's Preventive Health Screenings",
+      title: "Preventive Health Screenings",
       description: "Recommended health screenings by age and risk factors to maintain optimal health.",
       icon: <Activity size={20} />,
-      link: "/learn-more/preventive-screenings",
-      category: 'physical'
+      link: "/learn-more/preventive-screenings", 
+      category: 'Physical Wellness'
     },
   ];
 
@@ -102,7 +101,20 @@ const Resources = () => {
       resource.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
       resource.description.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .filter(resource => selectedCategory === 'all' || resource.category === selectedCategory);
+    .filter(resource => {
+      if (selectedCategory === 'all') return true;
+      
+      const categoryMap: { [key: string]: string[] } = {
+        'reproductive': ['Reproductive Health'],
+        'pregnancy': ['Pregnancy'],
+        'physical': ['Physical Wellness'], 
+        'mental': ['Mental Health'],
+        'sleep': ['Sleep & Rest'],
+        'financial': ['Financial Wellness']
+      };
+      
+      return categoryMap[selectedCategory]?.includes(resource.category);
+    });
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -123,19 +135,10 @@ const Resources = () => {
               transition={{ duration: 0.5 }}
               variants={fadeIn}
             >
-              <h1 className="text-3xl md:text-4xl font-display font-bold text-lumi-purple-dark mb-4">Wellness Resources</h1>
-              <p className="text-lumi-gray-dark max-w-2xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">Wellness Resources</h1>
+              <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
                 Explore our comprehensive collection of articles, guides, and tools to support your health journey.
               </p>
-              <div className="mt-2">
-                <Link 
-                  to="/admin/resources" 
-                  className="inline-flex items-center text-sm text-lumi-purple hover:text-lumi-purple-dark transition-colors mt-2"
-                >
-                  <Shield className="h-3 w-3 mr-1" />
-                  <span>Admin Access</span>
-                </Link>
-              </div>
             </motion.div>
             
             <motion.div 
@@ -147,7 +150,7 @@ const Resources = () => {
               variants={fadeIn}
             >
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-lumi-gray" size={18} />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
                 <Input
                   type="text"
                   placeholder="Search resources..."
@@ -169,13 +172,13 @@ const Resources = () => {
               {categories.map((category, index) => (
                 <Button
                   key={category.id}
-                  variant={selectedCategory === category.id ? "default" : "outline"}
+                  variant={selectedCategory === category.id ? "premium" : "outline"}
                   size="sm"
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`rounded-full ${
+                  className={`rounded-full font-medium ${
                     selectedCategory === category.id 
-                      ? 'bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white' 
-                      : 'border-lumi-purple/20 text-lumi-purple-dark'
+                      ? '' 
+                      : 'border-primary/30 text-foreground hover:bg-primary/5'
                   }`}
                 >
                   {category.label}
@@ -194,11 +197,12 @@ const Resources = () => {
                     transition={{ duration: 0.3, delay: index * 0.1 }}
                     variants={fadeIn}
                   >
-                    <ResourceCard 
+                    <EnhancedResourceCard 
                       title={resource.title}
                       description={resource.description}
                       icon={resource.icon}
                       link={resource.link}
+                      category={resource.category}
                     />
                   </motion.div>
                 ))
@@ -211,11 +215,11 @@ const Resources = () => {
                   transition={{ duration: 0.5 }}
                   variants={fadeIn}
                 >
-                  <Book size={40} className="text-lumi-purple/50 mx-auto mb-4" />
-                  <h3 className="text-xl font-display font-semibold text-lumi-purple-dark mb-2">
+                  <Book size={40} className="text-primary/50 mx-auto mb-4" />
+                  <h3 className="text-xl font-display font-semibold text-foreground mb-2">
                     No resources found
                   </h3>
-                  <p className="text-lumi-gray-dark mb-4">
+                  <p className="text-muted-foreground mb-4">
                     Try adjusting your search or filter criteria.
                   </p>
                   <Button 
@@ -224,7 +228,7 @@ const Resources = () => {
                       setSearchTerm('');
                       setSelectedCategory('all');
                     }}
-                    className="rounded-full border-lumi-purple/20 text-lumi-purple-dark"
+                    className="rounded-full border-primary/30 text-foreground"
                   >
                     <Filter size={16} />
                     <span>Clear filters</span>
@@ -241,16 +245,17 @@ const Resources = () => {
               transition={{ duration: 0.5, delay: 0.4 }}
               variants={fadeIn}
             >
-              <div className="lumi-card p-6 md:p-8 max-w-2xl mx-auto">
-                <Book size={28} className="text-lumi-purple mx-auto mb-4" />
-                <h3 className="text-xl font-display font-semibold text-lumi-purple-dark mb-2">
+              <div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl p-6 md:p-8 max-w-2xl mx-auto">
+                <Book size={28} className="text-primary mx-auto mb-4" />
+                <h3 className="text-xl font-display font-semibold text-foreground mb-2">
                   Request a Topic
                 </h3>
-                <p className="text-lumi-gray-dark mb-4">
-                  Don't see what you're looking for? Chat with Lumi or suggest a resource topic you'd find helpful.
+                <p className="text-muted-foreground mb-4 leading-relaxed">
+                  Don't see what you're looking for? Chat with Saya or suggest a resource topic you'd find helpful.
                 </p>
                 <Button 
-                  className="rounded-full bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 transition-all"
+                  variant="premium"
+                  className="rounded-full"
                 >
                   Suggest a topic
                 </Button>

@@ -67,7 +67,7 @@ function Hero() {
           duration: 0.8,
           delay: 0.3
         }}>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl max-w-2xl tracking-tighter text-center font-display font-bold text-lumi-purple-dark leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl max-w-2xl tracking-tighter text-center font-display font-bold text-foreground leading-tight">
               <span>Your</span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
                 &nbsp;
@@ -90,7 +90,7 @@ function Hero() {
               <span> companion for women's wellbeing</span>
             </h1>
 
-            <motion.p className="text-lg text-lumi-gray-dark mb-8 max-w-2xl text-center mx-auto" initial={{
+            <motion.p className="text-lg text-muted-foreground mb-8 max-w-2xl text-center mx-auto leading-relaxed" initial={{
             opacity: 0,
             y: 20
           }} animate={{
@@ -100,7 +100,7 @@ function Hero() {
             duration: 0.8,
             delay: 0.6
           }}>
-              Saya provides thoughtful, empathetic, and evidence-based guidance on women's health, reproductive wellness, and personal empowerment.
+              Get personalized guidance on women's health with Saya's thoughtful, evidence-based support.
             </motion.p>
           </motion.div>
           
@@ -114,17 +114,17 @@ function Hero() {
           duration: 0.8,
           delay: 0.9
         }}>
-            <Button size="lg" className="rounded-full bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 shadow-md hover:shadow-lg transition-all flex gap-2 items-center" onClick={() => document.getElementById('chat')?.scrollIntoView({
+            <Button size="lg" variant="premium" className="rounded-full flex gap-2 items-center" onClick={() => document.getElementById('chat')?.scrollIntoView({
             behavior: 'smooth'
           })}>
               <MessageCircle size={20} />
               <span>Chat with Saya</span>
             </Button>
             
-            <Link to="/learn-more">
-              <Button variant="outline" size="lg" className="rounded-full border-lumi-purple/20 text-lumi-purple-dark hover:bg-lumi-purple/5 flex gap-2 items-center transition-all">
+            <Link to="/about">
+              <Button variant="outline" size="lg" className="rounded-full border-primary/30 text-foreground hover:bg-primary/5 flex gap-2 items-center transition-all">
                 <Heart size={20} />
-                <span>Learn more</span>
+                <span>Learn about our approach</span>
               </Button>
             </Link>
           </motion.div>

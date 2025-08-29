@@ -32,30 +32,35 @@ const About = () => {
               </p>
             </motion.div>
 
-            <motion.div className="grid md:grid-cols-2 gap-10 items-center mb-20" initial="hidden" whileInView="visible" viewport={{
-            once: true
-          }} transition={{
-            duration: 0.5,
-            delay: 0.2
-          }} variants={fadeIn}>
+            <motion.div 
+              className="grid md:grid-cols-2 gap-10 items-center mb-20"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              variants={fadeIn}
+            >
               <div className="order-2 md:order-1">
-                <h2 className="text-2xl md:text-3xl font-display font-semibold text-lumi-purple-dark mb-4">
+                <h2 className="text-2xl md:text-3xl font-display font-semibold text-foreground mb-4">
                   Our Mission
                 </h2>
-                <p className="text-lumi-gray-dark mb-4">Saya was created with a simple yet powerful mission: to provide women with a safe, judgment-free space to explore health topics, find reliable information, and receive personalized guidance.</p>
-                <p className="text-lumi-gray-dark mb-6">
-                  We believe that access to compassionate health support should be available to everyone, whenever they need it. Through thoughtful conversations and evidence-based resources, we aim to empower women to make informed decisions about their wellbeing.
-                </p>
-                <Button className="rounded-full bg-gradient-to-br from-lumi-purple to-lumi-purple-dark text-white hover:opacity-90 transition-all shadow-md hover:shadow-lg flex gap-2 items-center" onClick={() => document.getElementById('chat')?.scrollIntoView({
-                behavior: 'smooth'
-              })}>
+                <div className="space-y-3 mb-6">
+                  <p className="text-muted-foreground">• Provide women with a safe, judgment-free space for health conversations</p>
+                  <p className="text-muted-foreground">• Deliver reliable, evidence-based health information and guidance</p>
+                  <p className="text-muted-foreground">• Empower women to make informed decisions about their wellbeing</p>
+                </div>
+                <Button 
+                  variant="premium" 
+                  className="rounded-full flex gap-2 items-center" 
+                  onClick={() => document.getElementById('chat')?.scrollIntoView({ behavior: 'smooth' })}
+                >
                   <MessageCircle size={16} />
                   <span>Chat with Saya</span>
                 </Button>
               </div>
               <div className="order-1 md:order-2 flex justify-center">
-                <div className="w-64 h-64 rounded-full bg-gradient-to-br from-lumi-purple/30 to-lumi-pink/30 flex items-center justify-center shadow-lg">
-                  <Heart size={80} className="text-lumi-purple" />
+                <div className="w-64 h-64 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center shadow-elegant">
+                  <Heart size={80} className="text-primary" />
                 </div>
               </div>
             </motion.div>
@@ -66,52 +71,56 @@ const About = () => {
             duration: 0.5,
             delay: 0.3
           }} variants={fadeIn}>
-              <h2 className="text-2xl md:text-3xl font-display font-semibold text-lumi-purple-dark mb-8 text-center">What Makes Saya Special</h2>
+              <h2 className="text-2xl md:text-3xl font-display font-semibold text-foreground mb-8 text-center">What Makes Saya Special</h2>
               <div className="grid md:grid-cols-3 gap-8">
                 {[{
-                icon: <Activity size={36} className="text-lumi-purple" />,
-                title: "Evidence-Based",
-                description: "All information provided by Lumi is grounded in medical research and expert knowledge."
+                icon: <Activity size={36} className="text-primary" />,
+                title: "Trusted Guidance",
+                description: "All information provided by Saya is grounded in medical research and expert knowledge."
               }, {
-                icon: <Users size={36} className="text-lumi-purple" />,
-                title: "Personalized",
-                description: "Every conversation is tailored to your unique needs, questions, and concerns."
+                icon: <Users size={36} className="text-primary" />,
+                title: "Tailored to You", 
+                description: "Every conversation is personalized to your unique needs, questions, and concerns."
               }, {
-                icon: <Award size={36} className="text-lumi-purple" />,
-                title: "Private & Secure",
-                description: "Your privacy is our priority. All conversations are confidential and protected."
-              }].map((feature, index) => <motion.div key={index} className="neo-card p-6 flex flex-col items-center text-center" initial="hidden" whileInView="visible" viewport={{
+                icon: <Award size={36} className="text-primary" />,
+                title: "Your Privacy is Our Priority",
+                description: "All conversations are completely confidential and securely protected."
+              }].map((feature, index) => <motion.div key={index} className="bg-card/80 backdrop-blur-sm border border-border rounded-xl p-6 flex flex-col items-center text-center hover:shadow-elegant transition-all" initial="hidden" whileInView="visible" viewport={{
                 once: true
               }} transition={{
                 duration: 0.3,
                 delay: 0.2 + index * 0.1
               }} variants={fadeIn}>
                     <div className="mb-4">{feature.icon}</div>
-                    <h3 className="text-xl font-display font-semibold text-lumi-purple-dark mb-2">{feature.title}</h3>
-                    <p className="text-lumi-gray-dark">{feature.description}</p>
+                    <h3 className="text-xl font-display font-semibold text-foreground mb-2">{feature.title}</h3>
+                    <p className="text-muted-foreground">{feature.description}</p>
                   </motion.div>)}
               </div>
             </motion.div>
 
-            <motion.div className="neo-card p-8 md:p-12" initial="hidden" whileInView="visible" viewport={{
+            <motion.div className="bg-card/80 backdrop-blur-sm border border-border rounded-xl p-8 md:p-12" initial="hidden" whileInView="visible" viewport={{
             once: true
           }} transition={{
             duration: 0.5,
             delay: 0.4
           }} variants={fadeIn}>
               <div className="text-center mb-8">
-                <h2 className="text-2xl md:text-3xl font-display font-semibold text-lumi-purple-dark mb-4">The Team Behind Saya</h2>
-                <p className="text-lumi-gray-dark max-w-3xl mx-auto">
-                  Lumi is developed by a diverse team of healthcare professionals, engineers, and designers committed to creating technology that makes a positive difference in women's lives.
+                <h2 className="text-2xl md:text-3xl font-display font-semibold text-foreground mb-4">Meet the Team</h2>
+                <p className="text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                  Saya is developed by a diverse team of healthcare professionals, engineers, and designers committed to creating technology that makes a positive difference in women's lives.
                 </p>
               </div>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[1, 2, 3].map((team, index) => <div key={index} className="flex flex-col items-center text-center">
-                    <div className="w-24 h-24 rounded-full bg-lumi-purple/20 flex items-center justify-center mb-4">
-                      <Star size={32} className="text-lumi-purple" />
+                {[
+                  { title: "Healthcare Professionals", description: "Medical experts who ensure Saya provides accurate, evidence-based information" },
+                  { title: "AI Researchers", description: "Technology specialists focused on empathetic and intelligent conversation" },
+                  { title: "UX Designers", description: "Design experts creating intuitive and supportive user experiences" }
+                ].map((team, index) => <div key={index} className="flex flex-col items-center text-center">
+                    <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                      <Heart size={32} className="text-primary" />
                     </div>
-                    <h3 className="text-lg font-display font-semibold text-lumi-purple-dark mb-1">Our Specialists</h3>
-                    <p className="text-lumi-gray-dark text-sm">Healthcare experts who ensure saya provides accurate, helpful information.</p>
+                    <h3 className="text-lg font-display font-semibold text-foreground mb-1">{team.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{team.description}</p>
                   </div>)}
               </div>
             </motion.div>
